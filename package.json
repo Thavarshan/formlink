@@ -48,7 +48,7 @@
         "@typescript-eslint/eslint-plugin": "^6.8.0",
         "@typescript-eslint/parser": "^6.8.0",
         "axios-mock-adapter": "^1.22.0",
-        "eslint": "^8.51.0",
+        "eslint": "^9.11.1",
         "eslint-plugin-mdx": "^2.2.0",
         "jsdom": "^22.1.0",
         "rollup-plugin-typescript-paths": "^1.4.0",
