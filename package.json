@@ -53,7 +53,7 @@
         "jsdom": "^22.1.0",
         "rollup-plugin-typescript-paths": "^1.4.0",
         "typescript": "^5.2.2",
-        "vite": "^4.4.11",
+        "vite": "^5.4.8",
         "vitest": "^0.34.6"
     }
 }
