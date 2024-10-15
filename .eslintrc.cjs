@@ -17,7 +17,7 @@ module.exports = {
   ],
   ignorePatterns: ['temp.js', '**/vendor/*.js', '*.spec.ts', '*.test.ts'],
   rules: {
-    indent: ['error', 4, { SwitchCase: 2 }],
+    indent: ['error', 2, { SwitchCase: 1 }],
     quotes: ['warn', 'single'],
     '@typescript-eslint/no-explicit-any': 'off',
     semi: 'off',

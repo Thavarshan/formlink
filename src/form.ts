@@ -134,7 +134,7 @@ export class Form<TForm extends FormDataType> implements IForm<TForm> {
         data: submitData,
         cancelToken: this.cancelTokenSource.token, // Attach the cancel token
         headers: {
-          'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '',
+          'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''
         },
         onUploadProgress: (event) => {
           if (event.total) {
@@ -143,13 +143,13 @@ export class Form<TForm extends FormDataType> implements IForm<TForm> {
               loaded: event.loaded,
               percentage: Math.round((event.loaded / event.total) * 100),
               bytes: event.loaded,
-              lengthComputable: event.lengthComputable,
+              lengthComputable: event.lengthComputable
             };
             if (options?.onProgress && this.progress) {
               options.onProgress(this.progress);
             }
           }
-        },
+        }
       });
 
       // Handle success
