@@ -8,7 +8,7 @@ _How does this change address the problem?_
 
 #### Open Questions and Pre-Merge TODOs
 
--   [ ] Use github checklists. When solved, check the box and explain the answer.
+- [ ] Use github checklists. When solved, check the box and explain the answer.
 
 ## Learning
 

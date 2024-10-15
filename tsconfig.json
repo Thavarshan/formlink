@@ -1,40 +1,42 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "lib": [
-            "DOM",
-            "DOM.Iterable",
-            "ESNext"
-        ],
-        "types": [
-            "vite/client",
-            "node"
-        ],
-        "allowJs": false,
-        "skipLibCheck": true,
-        "esModuleInterop": false,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "ESNext",
-        "moduleResolution": "Node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "declaration": true,
-        "jsx": "preserve",
-        "baseUrl": "./",
-        "paths": {
-            "@/*": [
-                "src/*"
-            ]
-        }
-    },
-    "include": [
-        "./src"
+  "compilerOptions": {
+    "rootDir": ".", // Set root directory for source files
+    "noEmitOnError": true,
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2020"
     ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]
+    "target": "ES2020",
+    "types": [
+      "node"
+    ],
+    "declaration": false,
+    "outDir": "./dist",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitThis": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "strict": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "tests",
+    "vitest.config.ts",
+    "src/types" // Exclude the existing types directory
+  ]
 }
