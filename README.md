@@ -141,17 +141,19 @@ const form = useForm({
 });
 
 const submitForm = () => {
-  form.transform((data) => ({
-    ...data,
-    email: data.email.toLowerCase(),
-  })).post('/register', {
-    onSuccess: () => {
-      alert('Registered successfully!');
-    },
-    onError: (errors) => {
-      console.error('Registration failed:', errors);
-    },
-  });
+  form
+    .transform((data) => ({
+      ...data,
+      email: data.email.toLowerCase(),
+    }))
+    .post('/register', {
+      onSuccess: () => {
+        alert('Registered successfully!');
+      },
+      onError: (errors) => {
+        console.error('Registration failed:', errors);
+      },
+    });
 };
 
 const resetForm = () => {
@@ -315,13 +317,13 @@ form.cancel();
 
 The `options` object provides hooks for various stages of the form submission.
 
-| Option      | Description                                                                 |
-|-------------|-----------------------------------------------------------------------------|
-| `onBefore`  | Called before the request is made.                                           |
-| `onProgress`| Tracks progress for file uploads or large payloads.                          |
-| `onSuccess` | Called when the request succeeds. Receives the response as an argument.      |
-| `onError`   | Called when the request fails. Receives the validation errors as an argument.|
-| `onFinish`  | Called after the request (whether successful or failed) has completed.       |
+| Option       | Description                                                                   |
+| ------------ | ----------------------------------------------------------------------------- |
+| `onBefore`   | Called before the request is made.                                            |
+| `onProgress` | Tracks progress for file uploads or large payloads.                           |
+| `onSuccess`  | Called when the request succeeds. Receives the response as an argument.       |
+| `onError`    | Called when the request fails. Receives the validation errors as an argument. |
+| `onFinish`   | Called after the request (whether successful or failed) has completed.        |
 
 #### Example Usage
 

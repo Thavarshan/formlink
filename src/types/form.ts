@@ -1,8 +1,8 @@
 import { FormDataType } from './form-data';
 import { FormDataConvertible } from './form-data-convertible';
 import { FormOptions } from './form-options';
-import { Progress } from './progress';
 import { Method } from './method';
+import { Progress } from './progress';
 
 /**
  * The Form interface provides a structure for managing form state and submission.

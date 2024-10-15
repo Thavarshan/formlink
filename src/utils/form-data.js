@@ -12,10 +12,10 @@ export const isFormData = (value) => value instanceof FormData;
  * @returns The FormData instance with appended values.
  */
 export function objectToFormData(source = {}, form = new FormData(), parentKey = null) {
-    for (const [key, value] of Object.entries(source)) {
-        append(form, composeKey(parentKey, key), value);
-    }
-    return form;
+  for (const [key, value] of Object.entries(source)) {
+    append(form, composeKey(parentKey, key), value);
+  }
+  return form;
 }
 /**
  * Composes a key for nested objects.
@@ -24,7 +24,7 @@ export function objectToFormData(source = {}, form = new FormData(), parentKey =
  * @returns The composed key.
  */
 function composeKey(parent, key) {
-    return parent ? `${parent}[${key}]` : key;
+  return parent ? `${parent}[${key}]` : key;
 }
 /**
  * Appends a value to the FormData instance.
@@ -33,32 +33,32 @@ function composeKey(parent, key) {
  * @param value - The value to append.
  */
 function append(form, key, value) {
-    switch (true) {
-        case Array.isArray(value):
-            value.forEach((item, index) => append(form, composeKey(key, index.toString()), item));
-            break;
-        case value instanceof Date:
-            form.append(key, value.toISOString());
-            break;
-        case value instanceof File:
-            form.append(key, value, value.name);
-            break;
-        case value instanceof Blob:
-            form.append(key, value);
-            break;
-        case typeof value === 'boolean':
-            form.append(key, value ? '1' : '0');
-            break;
-        case typeof value === 'string' || typeof value === 'number':
-            form.append(key, value.toString());
-            break;
-        case value === null || value === undefined:
-            form.append(key, '');
-            break;
-        case typeof value === 'object':
-            objectToFormData(value, form, key);
-            break;
-        default:
-            throw new TypeError(`Unsupported value type: ${typeof value} for key: ${key}`);
-    }
+  switch (true) {
+    case Array.isArray(value):
+      value.forEach((item, index) => append(form, composeKey(key, index.toString()), item));
+      break;
+    case value instanceof Date:
+      form.append(key, value.toISOString());
+      break;
+    case value instanceof File:
+      form.append(key, value, value.name);
+      break;
+    case value instanceof Blob:
+      form.append(key, value);
+      break;
+    case typeof value === 'boolean':
+      form.append(key, value ? '1' : '0');
+      break;
+    case typeof value === 'string' || typeof value === 'number':
+      form.append(key, value.toString());
+      break;
+    case value === null || value === undefined:
+      form.append(key, '');
+      break;
+    case typeof value === 'object':
+      objectToFormData(value, form, key);
+      break;
+    default:
+      throw new TypeError(`Unsupported value type: ${typeof value} for key: ${key}`);
+  }
 }

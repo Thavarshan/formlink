@@ -27,7 +27,7 @@ export default defineConfig({
           declarationDir: path.resolve(__dirname, 'dist/types'),
           outDir: path.resolve(__dirname, 'dist'),
           rootDir: path.resolve(__dirname, 'src'),
-          exclude: ['src/types']
+          exclude: ['src/types'],
         }),
       ],
     },

@@ -1,12 +1,13 @@
-import { cloneDeep } from 'lodash';
 import axios, { AxiosResponse, CancelTokenSource } from 'axios';
+import { cloneDeep } from 'lodash';
 import { reactive } from 'vue';
+
+import { Form as IForm } from '@/types/form';
 import { FormDataType } from '@/types/form-data';
 import { FormDataConvertible } from '@/types/form-data-convertible';
 import { FormOptions } from '@/types/form-options';
-import { Form as IForm } from '@/types/form';
+import { Method } from '@/types/method';
 import { Progress } from '@/types/progress';
-import { Method } from './types/method';
 
 /**
  * The Form class provides a simple way to manage form state and submission.
@@ -29,7 +30,7 @@ export class Form<TForm extends FormDataType> implements IForm<TForm> {
    * Create a form.
    * @param {TForm} initialData - The initial form data.
    */
-  constructor (initialData: TForm) {
+  constructor(initialData: TForm) {
     this.defaults = cloneDeep(initialData);
     // Make form state reactive to fit the Vue ecosystem
     this.data = reactive(cloneDeep(initialData)) as TForm;
@@ -162,7 +163,7 @@ export class Form<TForm extends FormDataType> implements IForm<TForm> {
       }
     } catch (error: any) {
       if (axios.isCancel(error)) {
-        console.log('Form submission canceled');
+        // Handle cancellation
       } else {
         // If it's a Laravel validation error (422), handle it
         if (error.response && error.response.status === 422) {
