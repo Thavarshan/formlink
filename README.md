@@ -1,342 +1,233 @@
-# Formlink
+[![Formlink](./assets/Banner.png)](https://github.com/Thavarshan/formlink)
 
-**Formlink** is a form helper library designed to simplify the process of managing forms, validation errors, and form submissions, particularly in applications built with Vue.js and Laravel.
+# About Formlink
 
-This library helps manage form state and provides a set of methods to handle form submissions seamlessly, including file uploads, form resets, transformations, and handling validation errors.
+[![Latest Version on npm](https://img.shields.io/npm/v/jerome-formlink.svg)](https://www.npmjs.com/package/jerome-formlink)
+[![Test](https://github.com/Thavarshan/formlink/actions/workflows/test.yml/badge.svg)](https://github.com/Thavarshan/formlink/actions/workflows/test.yml)
+[![Lint](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml/badge.svg)](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml)
+[![Total Downloads](https://img.shields.io/npm/dt/formlink.svg)](https://www.npmjs.com/package/formlink)
 
-## Features
+Formlink simplifies form handling in Vue.js with minimal boilerplate. It offers powerful form submission and validation helpers that work seamlessly with Laravel backend responses. With Formlink, you get the core form handling features without the extra overhead, making it similar to Inertia.js form helpers but without the extra guff.
 
-- **Reactive form state** compatible with Vue.js.
-- **Validation error handling** with support for Laravel validation responses.
-- **File uploads** with progress tracking.
-- **Form transformation** before submission.
-- **Supports CSRF tokens** (Laravel).
-- **Cancelation** of form submissions.
-- **Vue.js composable for easy integration**.
+Key Features:
 
-## Installation
+- Reactive form data with Vue 3 support.
+- Automatic CSRF token handling for Laravel.
+- Simplified API with methods for `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, and more.
+- Error handling and validation integration with Laravel.
+- File upload progress tracking.
 
-Install Formlink via npm:
+## Getting Started
 
-```bash
-npm install formlink
+### Prerequisites
+
+Make sure you have Node.js installed:
+
+```sh
+npm install npm@latest -g
 ```
 
-or with Yarn:
+### Installation
 
-```bash
-yarn add formlink
-```
+1. Install the Formlink package via npm:
 
-## Vue.js Usage with `useForm` Composable
+   ```sh
+   npm install formlink
+   ```
 
-**Formlink** provides a `useForm` composable for Vue.js, making form handling and state management simple and reactive.
+2. Import Formlink in your Vue components:
 
-### Example - Basic Form Submission
+   ```javascript
+   import { useForm } from 'formlink';
+   ```
+
+3. Setup a form in your Vue component:
+
+   ```javascript
+   const form = useForm({
+     name: '',
+     email: '',
+     message: ''
+   });
+   ```
+
+## Usage
+
+Formlink is a Vue composable for handling form data and submissions. Here's how you can use it with Vue:
+
+### Basic Form Submission
 
 ```vue
 <template>
   <form @submit.prevent="submitForm">
-    <input v-model="form.data.email" type="text" placeholder="Email" />
-    <span v-if="form.errors.email">{{ form.errors.email }}</span>
-
-    <input v-model="form.data.password" type="password" placeholder="Password" />
-    <span v-if="form.errors.password">{{ form.errors.password }}</span>
-
-    <input type="checkbox" v-model="form.data.remember" /> Remember me
-
-    <button type="submit" :disabled="form.processing">Login</button>
+    <input v-model="form.name" type="text" placeholder="Name" />
+    <input v-model="form.email" type="email" placeholder="Email" />
+    <textarea v-model="form.message" placeholder="Your Message"></textarea>
+    <button :disabled="form.processing" type="submit">Send</button>
   </form>
 </template>
 
-<script setup>
+<script>
 import { useForm } from 'formlink';
 
-const form = useForm({
-  email: '',
-  password: '',
-  remember: false,
-});
-
-const submitForm = () => {
-  form.post('/login', {
-    onSuccess: () => {
-      alert('Logged in successfully!');
-    },
-    onError: (errors) => {
-      console.error('Failed to log in:', errors);
-    },
-  });
-};
-</script>
-```
-
-### Example - Handling File Uploads with Progress
-
-```vue
-<template>
-  <form @submit.prevent="submitForm">
-    <input v-model="form.data.name" type="text" placeholder="Your Name" />
-    <span v-if="form.errors.name">{{ form.errors.name }}</span>
-
-    <input type="file" @change="handleFileChange" />
-    <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-      {{ form.progress.percentage }}%
-    </progress>
-
-    <button type="submit" :disabled="form.processing">Submit</button>
-  </form>
-</template>
-
-<script setup>
-import { useForm } from 'formlink';
-
-const form = useForm({
-  name: '',
-  file: null,
-});
-
-const handleFileChange = (e) => {
-  form.data.file = e.target.files[0];
-};
-
-const submitForm = () => {
-  form.post('/upload', {
-    onProgress: (progress) => {
-      console.log('Progress:', progress.percentage);
-    },
-    onSuccess: () => {
-      alert('File uploaded successfully!');
-    },
-    onError: (errors) => {
-      console.error('File upload failed:', errors);
-    },
-  });
-};
-</script>
-```
-
-### Example - Resetting and Transforming Form Data
-
-```vue
-<template>
-  <form @submit.prevent="submitForm">
-    <input v-model="form.data.email" type="text" placeholder="Email" />
-    <span v-if="form.errors.email">{{ form.errors.email }}</span>
-
-    <input v-model="form.data.password" type="password" placeholder="Password" />
-    <span v-if="form.errors.password">{{ form.errors.password }}</span>
-
-    <button type="submit" :disabled="form.processing">Register</button>
-    <button type="button" @click="resetForm">Reset</button>
-  </form>
-</template>
-
-<script setup>
-import { useForm } from 'formlink';
-
-const form = useForm({
-  email: '',
-  password: '',
-});
-
-const submitForm = () => {
-  form
-    .transform((data) => ({
-      ...data,
-      email: data.email.toLowerCase(),
-    }))
-    .post('/register', {
-      onSuccess: () => {
-        alert('Registered successfully!');
-      },
-      onError: (errors) => {
-        console.error('Registration failed:', errors);
-      },
+export default {
+  setup() {
+    const form = useForm({
+      name: '',
+      email: '',
+      message: ''
     });
-};
 
-const resetForm = () => {
-  form.reset();
+    const submitForm = async () => {
+      try {
+        await form.post('/contact');
+        alert('Form submitted successfully');
+      } catch (errors) {
+        console.error('Form submission failed:', form.errors);
+      }
+    };
+
+    return { form, submitForm };
+  }
+};
+</script>
+```
+
+### Handling Errors and Validations
+
+Formlink integrates with Laravel validation responses, automatically capturing errors.
+
+```vue
+<p v-if="form.errors.name">{{ form.errors.name }}</p>
+```
+
+### Progress Handling for File Uploads
+
+```vue
+<template>
+  <form @submit.prevent="uploadFile">
+    <input type="file" @change="handleFileChange" />
+    <p v-if="form.progress">{{ form.progress.percentage }}% uploaded</p>
+    <button :disabled="form.processing" type="submit">Upload</button>
+  </form>
+</template>
+
+<script>
+import { useForm } from 'formlink';
+
+export default {
+  setup() {
+    const form = useForm({
+      file: null
+    });
+
+    const handleFileChange = (e) => {
+      form.data.file = e.target.files[0];
+    };
+
+    const uploadFile = async () => {
+      await form.post('/upload', {
+        onProgress: (progress) => {
+          console.log(progress);
+        }
+      });
+    };
+
+    return { form, handleFileChange, uploadFile };
+  }
 };
 </script>
 ```
 
 ## API Reference
 
-### `useForm<T>(initialData: T)`
+### `useForm<TForm>(initialData: TForm)`
 
-Creates a new form instance using the `useForm` composable for Vue.js.
+Create a reactive form object.
 
-- `initialData`: An object containing the form fields.
+### Methods
 
-#### Example
+#### `submit(method: Method, url: string, options?: FormOptions<TForm>)`
 
-```ts
-const form = useForm({
-  email: '',
-  password: '',
-  remember: false,
-});
-```
+Submit the form with any HTTP method.
 
-### `form.get(url: string, options?: FormOptions<T>)`
+#### `post(url: string, options?: FormOptions<TForm>)`
 
-Sends a `GET` request with the form data.
+Submit the form with a `POST` request.
 
-- `url`: The URL to send the request to.
-- `options`: Optional configuration for the form submission (see below).
+#### `get(url: string, options?: FormOptions<TForm>)`
 
-#### Example
+Submit the form with a `GET` request.
 
-```ts
-form.get('/profile', {
-  onSuccess: (response) => {
-    console.log('Profile data:', response.data);
-  },
-});
-```
+#### `put(url: string, options?: FormOptions<TForm>)`
 
-### `form.post(url: string, options?: FormOptions<T>)`
+Submit the form with a `PUT` request.
 
-Sends a `POST` request with the form data.
+#### `patch(url: string, options?: FormOptions<TForm>)`
 
-- `url`: The URL to send the request to.
-- `options`: Optional configuration for the form submission.
+Submit the form with a `PATCH` request.
 
-#### Example
+#### `delete(url: string, options?: FormOptions<TForm>)`
 
-```ts
-form.post('/login', {
-  onSuccess: () => {
-    alert('Logged in successfully!');
-  },
-  onError: (errors) => {
-    console.error('Failed to log in:', errors);
-  },
-});
-```
+Submit the form with a `DELETE` request.
 
-### `form.put(url: string, options?: FormOptions<T>)`
+#### `options(url: string, options?: FormOptions<TForm>)`
 
-Sends a `PUT` request with the form data.
+Submit the form with an `OPTIONS` request.
 
-- `url`: The URL to send the request to.
-- `options`: Optional configuration for the form submission.
+#### `setError(field: keyof TForm, message: string)`
 
-#### Example
+Set a specific error for a form field.
 
-```ts
-form.put('/profile', {
-  onSuccess: () => {
-    alert('Profile updated successfully!');
-  },
-});
-```
+#### `clearErrors()`
 
-### `form.patch(url: string, options?: FormOptions<T>)`
+Clear all form errors.
 
-Sends a `PATCH` request with the form data.
+#### `reset(...fields: (keyof TForm)[])`
 
-- `url`: The URL to send the request to.
-- `options`: Optional configuration for the form submission.
+Reset form data to its initial state or reset specific fields.
 
-#### Example
+#### `cancel()`
 
-```ts
-form.patch('/profile', {
-  onSuccess: () => {
-    alert('Profile partially updated!');
-  },
-});
-```
+Cancel an ongoing form submission.
 
-### `form.delete(url: string, options?: FormOptions<T>)`
+## Roadmap
 
-Sends a `DELETE` request with the form data.
+- [x] Add GET, POST, PUT, DELETE methods.
+- [ ] Add advanced file upload handling.
+- [ ] Improve validation handling.
+- [ ] Support additional form submission events (e.g., `onAbort`).
 
-- `url`: The URL to send the request to.
-- `options`: Optional configuration for the form submission.
-
-#### Example
-
-```ts
-form.delete('/account', {
-  onSuccess: () => {
-    alert('Account deleted successfully!');
-  },
-});
-```
-
-### `form.reset(...fields: (keyof T)[])`
-
-Resets the form to its initial state. You can optionally reset specific fields.
-
-#### Example
-
-```ts
-form.reset(); // Resets the entire form
-
-form.reset('email', 'password'); // Resets only the email and password fields
-```
-
-### `form.clearErrors()`
-
-Clears all validation errors on the form.
-
-#### Example
-
-```ts
-form.clearErrors();
-```
-
-### `form.setErrors(errors: Partial<Record<keyof T, string>>)`
-
-Sets validation errors for the form fields.
-
-#### Example
-
-```ts
-form.setErrors({
-  email: 'This email is invalid',
-  password: 'The password is too short',
-});
-```
-
-### `form.cancel()`
-
-Cancels an ongoing form submission if it hasn't completed yet.
-
-#### Example
-
-```ts
-form.cancel();
-```
-
-### Options Object (`FormOptions<T>`)
-
-The `options` object provides hooks for various stages of the form submission.
-
-| Option       | Description                                                                   |
-| ------------ | ----------------------------------------------------------------------------- |
-| `onBefore`   | Called before the request is made.                                            |
-| `onProgress` | Tracks progress for file uploads or large payloads.                           |
-| `onSuccess`  | Called when the request succeeds. Receives the response as an argument.       |
-| `onError`    | Called when the request fails. Receives the validation errors as an argument. |
-| `onFinish`   | Called after the request (whether successful or failed) has completed.        |
-
-#### Example Usage
-
-```ts
-form.post('/login', {
-  onBefore: () => console.log('Submitting form...'),
-  onProgress: (progress) => console.log('Progress:', progress.percentage),
-  onSuccess: (response) => console.log('Login successful!', response),
-  onError: (errors) => console.error('Form validation failed:', errors),
-  onFinish: () => console.log('Form submission completed'),
-});
-```
+See the [open issues](https://github.com/Thavarshan/formlink/issues) for a list of proposed features (and known issues).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+We’re currently looking for help in the following areas:
+
+- Expanding test coverage for async task management
+- Improving documentation for more advanced use cases
+- Adding support for additional HTTP methods and protocols
+
+To contribute:
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/amazing-feature`)
+3. Commit your Changes (`git commit -m 'Add some amazing-feature'`)
+4. Push to the Branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Authors
+
+- **[Jerome Thayananthajothy]** - *Initial work* - [Thavarshan](https://github.com/Thavarshan)
+
+See also the list of [contributors](https://github.com/Thavarshan/formlink/contributors) who participated in this project.
+
+## Acknowledgments
+
+- Thanks to **Guzzle HTTP** for providing the underlying HTTP client that powers synchronous requests.

@@ -6,9 +6,9 @@ about: "Report something that's broken."
 <!-- DO NOT THROW THIS AWAY -->
 <!-- Fill out the FULL versions with patch versions -->
 
-- Formlink Version: 0.0.1
-- Node Version: 16.x / 18.x / 19.x
-- TypeScript Version: 5.2.2
+- Formlink Version: 1.0.0
+- Node Version: 18.x / 19.x / 20.x
+- TypeScript Version: 5.6
 
 ### Description
 

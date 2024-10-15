@@ -6,7 +6,7 @@
 
 | Version | Security Fixes Until |
 | ------- | -------------------- |
-| 0.0.1   | Nov 30th, 2023       |
+| 1.0.0   | Oct 15th, 2025       |
 
 ## Reporting a Vulnerability
 
