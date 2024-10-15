@@ -7,7 +7,7 @@
 [![Lint](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml/badge.svg)](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml)
 [![Total Downloads](https://img.shields.io/npm/dt/formlink.svg)](https://www.npmjs.com/package/formlink)
 
-Formlink simplifies form handling in Vue.js with minimal boilerplate. It offers powerful form submission and validation helpers that work seamlessly with Laravel backend responses. With Formlink, you get the core form handling features without the extra overhead, making it similar to Inertia.js form helpers but without the extra guff.
+Formlink is inspired by Inertia.js's form helpers, but without the extra baggage. Designed specifically for traditional Laravel and Vue.js SPA applications, it simplifies form handling by removing unnecessary boilerplate. With Formlink, you get powerful form submission and validation helpers that integrate seamlessly with Laravel backend responses, offering all the essential features without the overhead. It's easy to use and takes care of the repetitive tasks, allowing you to focus on building your application rather than writing boilerplate code.
 
 Key Features:
 
@@ -230,4 +230,5 @@ See also the list of [contributors](https://github.com/Thavarshan/formlink/contr
 
 ## Acknowledgments
 
-- Thanks to **Guzzle HTTP** for providing the underlying HTTP client that powers synchronous requests.
+- Inspired by **InertiaJS** for its approach to form handling.
+- A special thanks to **Jonathan Reinink** for his work on InertiaJS.
