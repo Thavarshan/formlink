@@ -1,4 +1,4 @@
-name: Formlink CI
+name: CI
 
 on:
   schedule:
@@ -9,7 +9,7 @@ on:
     branches: ['main']
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
 
     strategy:
