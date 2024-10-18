@@ -7,3 +7,4 @@ yarn.lock
 /blob-report/
 /playwright/.cache/
 .DS_Store
+note.md

@@ -1,5 +1,5 @@
-import { FormDataConvertible } from '@/types/form-data-convertible';
-import { RequestPayload } from '@/types/request-payload';
+import { FormDataConvertible } from '../types/form-data-convertible';
+import { RequestPayload } from '../types/request-payload';
 
 /**
  * Checks if the provided data contains any files.
@@ -16,7 +16,7 @@ export function hasFiles(data: RequestPayload | FormDataConvertible): boolean {
   }
 
   if (data instanceof FormData) {
-    for (const value of data.values()) {
+    for (const [, value] of (data as any).entries()) {
       if (hasFiles(value)) {
         return true;
       }

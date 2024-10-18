@@ -1,19 +1,21 @@
-import axios, { AxiosResponse, CancelTokenSource } from 'axios';
-import { cloneDeep } from 'lodash';
-import { reactive } from 'vue';
-
-import { Form as IForm } from '@/types/form';
-import { FormDataType } from '@/types/form-data';
-import { FormDataConvertible } from '@/types/form-data-convertible';
-import { FormOptions } from '@/types/form-options';
-import { Method } from '@/types/method';
-import { Progress } from '@/types/progress';
+import axios, { AxiosInstance, AxiosResponse, CancelTokenSource } from 'axios';
+import { cloneDeep, has, includes, set } from 'lodash';
+import { Form as IForm } from './types/form';
+import { FormDataType } from './types/form-data';
+import { FormDataConvertible } from './types/form-data-convertible';
+import { FormOptions } from './types/form-options';
+import { Method } from './types/method';
+import { Progress } from './types/progress';
+import { objectToFormData } from './utils/form-data';
+import { hasFiles } from './utils/file';
+import { reservedFieldNames, guardAgainstReservedFieldName } from './utils/field-name-validator';
 
 /**
  * The Form class provides a simple way to manage form state and submission.
  * @template TForm - The type of form data.
  */
 export class Form<TForm extends FormDataType> implements IForm<TForm> {
+  [key: string]: any;
   public data: TForm;
   public errors: Partial<Record<keyof TForm | 'formError', string>> = {};
   public processing = false;
@@ -25,15 +27,54 @@ export class Form<TForm extends FormDataType> implements IForm<TForm> {
   protected defaults: TForm;
   protected transformCallback: ((data: TForm) => object) | null = null;
   protected cancelTokenSource: CancelTokenSource | null = null;
+  protected axiosInstance: AxiosInstance;
 
   /**
-   * Create a form.
+   * Create a new form instance.
    * @param {TForm} initialData - The initial form data.
+   * @param {AxiosInstance} [axiosInstance=axios] - The Axios instance to use for requests.
    */
-  constructor(initialData: TForm) {
-    this.defaults = cloneDeep(initialData);
-    // Make form state reactive to fit the Vue ecosystem
-    this.data = reactive(cloneDeep(initialData)) as TForm;
+  constructor(initialData: TForm, axiosInstance: AxiosInstance = axios) {
+    this.data = initialData;
+    this.defaults = { ...initialData };
+    this.axiosInstance = axiosInstance;
+
+    return new Proxy(this, {
+      get(target, key: string) {
+        // Check if the property is a method in the class prototype
+        const value = Reflect.get(target, key, target);
+
+        if (typeof value === 'function') {
+          return value.bind(target);
+        }
+
+        // Check if the key exists on the instance
+        if (has(target, key)) {
+          return target[key];
+        }
+
+        // Check if the key exists in the form data
+        if (has(target.data, key)) {
+          return target.data[key];
+        }
+
+        return undefined;
+      },
+      set(target, key, value) {
+        guardAgainstReservedFieldName(key as string);
+
+        if (has(target.data, key) && target.data[key] !== value && !includes(reservedFieldNames, key)) {
+          // Store the previous value in defaults before updating
+          set(target.defaults, key, target.data[key]);
+          // Update the data property
+          set(target.data, key, value);
+          // Set the isDirty property to true
+          target.isDirty = true;
+          return true;
+        }
+        return false;
+      }
+    });
   }
 
   /**
@@ -127,11 +168,16 @@ export class Form<TForm extends FormDataType> implements IForm<TForm> {
         options.onBefore();
       }
 
+      // Check if the form data contains files
+      const dataToSubmit = hasFiles(this.data)
+        ? objectToFormData(this.data as Record<string, FormDataConvertible>)
+        : submitData;
+
       // Make an Axios request (supports file uploads with FormData)
       const response: AxiosResponse = await axios({
         method,
         url,
-        data: submitData,
+        data: dataToSubmit,
         cancelToken: this.cancelTokenSource.token, // Attach the cancel token
         headers: {
           'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''

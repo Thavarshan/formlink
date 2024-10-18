@@ -5,49 +5,43 @@ import { Method } from './method';
 import { Progress } from './progress';
 
 /**
- * The Form interface provides a structure for managing form state and submission.
+ * Interface for the Form class.
  * @template TForm - The type of form data.
  */
-export interface Form<TForm extends FormDataType> {
+export interface Form<TForm extends FormDataType> extends Record<string, unknown> {
   /**
-   * The form data.
-   * @type {TForm}
+   * The current form data.
    */
-  data: TForm;
+  [key: string]: any;
+  readonly data: TForm;
 
   /**
    * The form errors.
-   * @type {Partial<Record<keyof TForm | 'formError', string>>}
    */
   errors: Partial<Record<keyof TForm | 'formError', string>>;
 
   /**
-   * Indicates whether the form is currently being processed.
-   * @type {boolean}
+   * Indicates if the form is being processed.
    */
   processing: boolean;
 
   /**
    * The progress of the form submission.
-   * @type {Progress | null}
    */
   progress: Progress | null;
 
   /**
-   * Indicates whether the form submission was successful.
-   * @type {boolean}
+   * Indicates if the form was successful.
    */
   wasSuccessful: boolean;
 
   /**
-   * Indicates whether the form was recently successful.
-   * @type {boolean}
+   * Indicates if the form was recently successful.
    */
   recentlySuccessful: boolean;
 
   /**
-   * Indicates whether the form data has been modified.
-   * @type {boolean}
+   * Indicates if the form is dirty (has unsaved changes).
    */
   isDirty: boolean;
 
@@ -73,7 +67,7 @@ export interface Form<TForm extends FormDataType> {
   clearErrors(): void;
 
   /**
-   * Reset form data to defaults. You can optionally reset specific fields.
+   * Reset form data to defaults. Optionally reset specific fields.
    * @param {...(keyof TForm)[]} fields - The fields to reset.
    * @returns {void}
    */
@@ -102,6 +96,54 @@ export interface Form<TForm extends FormDataType> {
    * @returns {Promise<void>} A promise that resolves when the form is submitted.
    */
   submit(method: Method, url: string, options?: Partial<FormOptions<TForm>>): Promise<void>;
+
+  /**
+   * Submit the form with a GET request.
+   * @param {string} url - The URL to submit to.
+   * @param {Partial<FormOptions<TForm>>} [options] - The form options.
+   * @returns {Promise<void>} A promise that resolves when the form is submitted.
+   */
+  get(url: string, options?: Partial<FormOptions<TForm>>): Promise<void>;
+
+  /**
+   * Submit the form with a POST request.
+   * @param {string} url - The URL to submit to.
+   * @param {Partial<FormOptions<TForm>>} [options] - The form options.
+   * @returns {Promise<void>} A promise that resolves when the form is submitted.
+   */
+  post(url: string, options?: Partial<FormOptions<TForm>>): Promise<void>;
+
+  /**
+   * Submit the form with a PUT request.
+   * @param {string} url - The URL to submit to.
+   * @param {Partial<FormOptions<TForm>>} [options] - The form options.
+   * @returns {Promise<void>} A promise that resolves when the form is submitted.
+   */
+  put(url: string, options?: Partial<FormOptions<TForm>>): Promise<void>;
+
+  /**
+   * Submit the form with a PATCH request.
+   * @param {string} url - The URL to submit to.
+   * @param {Partial<FormOptions<TForm>>} [options] - The form options.
+   * @returns {Promise<void>} A promise that resolves when the form is submitted.
+   */
+  patch(url: string, options?: Partial<FormOptions<TForm>>): Promise<void>;
+
+  /**
+   * Submit the form with a DELETE request.
+   * @param {string} url - The URL to submit to.
+   * @param {Partial<FormOptions<TForm>>} [options] - The form options.
+   * @returns {Promise<void>} A promise that resolves when the form is submitted.
+   */
+  delete(url: string, options?: Partial<FormOptions<TForm>>): Promise<void>;
+
+  /**
+   * Submit the form with an OPTIONS request.
+   * @param {string} url - The URL to submit to.
+   * @param {Partial<FormOptions<TForm>>} [options] - The form options.
+   * @returns {Promise<void>} A promise that resolves when the form is submitted.
+   */
+  options(url: string, options?: Partial<FormOptions<TForm>>): Promise<void>;
 
   /**
    * Cancel a form submission in progress.

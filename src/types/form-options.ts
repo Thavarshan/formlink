@@ -4,6 +4,11 @@ import { Progress } from './progress';
 
 export interface FormOptions<TForm> {
   /**
+   * Determines whether the form should reset to its initial state after a successful submission.
+   */
+  resetOnSuccess: boolean;
+
+  /**
    * Hook called before the form submission starts.
    */
   onBefore?: () => void;
@@ -13,6 +18,11 @@ export interface FormOptions<TForm> {
    * @param response - The Axios response from the server.
    */
   onSuccess?: (response: AxiosResponse) => void;
+
+  /**
+   * Hook called when the form submission is canceled.
+   */
+  onCanceled?: () => void;
 
   /**
    * Hook called when the form submission fails, specifically for handling errors (e.g., Laravel validation errors).

@@ -22,12 +22,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/formlinkjs/formlink.git"
+    "url": "git+https://github.com/Thavarshan/formlink.git"
   },
   "bugs": {
-    "url": "https://github.com/formlinkjs/formlink.git/issues"
+    "url": "https://github.com/Thavarshan/formlink.git/issues"
   },
-  "homepage": "https://formlinkjs.com",
+  "homepage": "https://thavarshan.com",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"

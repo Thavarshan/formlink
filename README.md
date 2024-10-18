@@ -7,9 +7,9 @@
 [![Lint](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml/badge.svg)](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml)
 [![Total Downloads](https://img.shields.io/npm/dt/formlink.svg)](https://www.npmjs.com/package/formlink)
 
-Formlink is inspired by Inertia.js's form helpers, but without the extra baggage. Designed specifically for traditional Laravel and Vue.js SPA applications, it simplifies form handling by removing unnecessary boilerplate. With Formlink, you get powerful form submission and validation helpers that integrate seamlessly with Laravel backend responses, offering all the essential features without the overhead. It's easy to use and takes care of the repetitive tasks, allowing you to focus on building your application rather than writing boilerplate code.
+Formlink is inspired by Inertia.js's form helpers, but without the extra baggage. Designed specifically for traditional Laravel and Vue.js SPA applications, it simplifies form handling by removing unnecessary boilerplate. With Formlink, you get powerful form submission and validation helpers that integrate seamlessly with Laravel backend responses, offering all the essential features without the overhead. It's easy to use and takes care of repetitive tasks, allowing you to focus on building your application rather than writing boilerplate code.
 
-Key Features:
+### Key Features
 
 - Reactive form data with Vue 3 support.
 - Automatic CSRF token handling for Laravel.
@@ -21,7 +21,7 @@ Key Features:
 
 ### Prerequisites
 
-Make sure you have Node.js installed:
+Ensure you have Node.js installed:
 
 ```sh
 npm install npm@latest -g
@@ -47,7 +47,7 @@ npm install npm@latest -g
    const form = useForm({
      name: '',
      email: '',
-     message: ''
+     message: '',
    });
    ```
 
@@ -75,7 +75,7 @@ export default {
     const form = useForm({
       name: '',
       email: '',
-      message: ''
+      message: '',
     });
 
     const submitForm = async () => {
@@ -88,7 +88,7 @@ export default {
     };
 
     return { form, submitForm };
-  }
+  },
 };
 </script>
 ```
@@ -118,7 +118,7 @@ import { useForm } from 'formlink';
 export default {
   setup() {
     const form = useForm({
-      file: null
+      file: null,
     });
 
     const handleFileChange = (e) => {
@@ -129,12 +129,12 @@ export default {
       await form.post('/upload', {
         onProgress: (progress) => {
           console.log(progress);
-        }
+        },
       });
     };
 
     return { form, handleFileChange, uploadFile };
-  }
+  },
 };
 </script>
 ```
@@ -224,7 +224,7 @@ To contribute:
 
 ## Authors
 
-- **[Jerome Thayananthajothy]** - *Initial work* - [Thavarshan](https://github.com/Thavarshan)
+- **[Jerome Thayananthajothy]** - _Initial work_ - [Thavarshan](https://github.com/Thavarshan)
 
 See also the list of [contributors](https://github.com/Thavarshan/formlink/contributors) who participated in this project.
 

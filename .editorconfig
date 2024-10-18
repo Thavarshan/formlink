@@ -10,15 +10,15 @@ insert_final_newline = true
 
 # Matches multiple files with brace expansion notation
 # Set default charset
-[*.{ts,js}]
+[*.{js,ts,tsx}]
 charset = utf-8
 
-# 2 space indentation for TypeScript and JavaScript files
-[*.{ts,js}]
+# 2 space indentation for JavaScript and TypeScript files
+[*.{js,ts,tsx}]
 indent_style = space
 indent_size = 2
 
-# Tab indentation (no size specified)
+# Tab indentation (no size specified) for Makefile
 [Makefile]
 indent_style = tab
 

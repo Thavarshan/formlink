@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": ".", // Set root directory for source files
+    "rootDir": ".",
     "noEmitOnError": true,
     "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "target": "ES2020",
@@ -24,9 +24,5 @@
       "@/*": ["src/*"]
     }
   },
-  "exclude": [
-    "tests",
-    "vitest.config.ts",
-    "src/types" // Exclude the existing types directory
-  ]
+  "exclude": ["tests", "vitest.config.ts", "src/types"]
 }

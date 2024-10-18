@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { reactive, isReactive } from 'vue';
+import { isReactive } from 'vue';
 import { useForm } from '../src/use-form';
-import { Form } from '../src/form';
 
 interface TestFormData {
   name: string;
@@ -32,8 +31,8 @@ describe('useForm', () => {
 
   it('should set and get form data', () => {
     const form = useForm(initialData);
-    form.data.name = 'John Doe';
-    form.data.email = 'john@example.com';
+    form.name = 'John Doe';
+    form.email = 'john@example.com';
     expect(form.data).toEqual({ name: 'John Doe', email: 'john@example.com' });
   });
 
@@ -54,23 +53,23 @@ describe('useForm', () => {
 
   it('should reset form data to defaults', () => {
     const form = useForm(initialData);
-    form.data.name = 'John Doe';
-    form.data.email = 'john@example.com';
+    form.name = 'John Doe';
+    form.email = 'john@example.com';
     form.reset();
     expect(form.data).toEqual({ name: '', email: '' });
   });
 
   it('should reset specific fields to defaults', () => {
     const form = useForm(initialData);
-    form.data.name = 'John Doe';
-    form.data.email = 'john@example.com';
+    form.name = 'John Doe';
+    form.email = 'john@example.com';
     form.reset('name');
     expect(form.data).toEqual({ name: '', email: 'john@example.com' });
   });
 
   it('should set new default values', () => {
     const form = useForm(initialData);
-    form.data.name = 'John Doe';
+    form.name = 'John Doe';
     form.setDefaults();
     form.reset();
     expect(form.data).toEqual({ name: 'John Doe', email: '' });
@@ -79,8 +78,8 @@ describe('useForm', () => {
   it('should apply a transformation to the form data before submission', () => {
     const form = useForm(initialData);
     form.transform((data) => ({ ...data, name: data.name.toUpperCase() }));
-    form.data.name = 'John Doe';
-    expect(form.data.name).toBe('John Doe');
+    form.name = 'John Doe';
+    expect(form.name).toBe('John Doe');
     expect(form['transformCallback']!(form.data)).toEqual({ name: 'JOHN DOE', email: '' });
   });
 });
