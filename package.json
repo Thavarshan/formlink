@@ -1,7 +1,7 @@
 {
   "name": "formlink",
   "description": "Form helper library.",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "type": "module",
   "author": {
     "name": "Jerome Thayananthajothy",
@@ -12,9 +12,9 @@
   "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./src/index.ts",
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js"
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/types/index.d.ts"
     },
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"

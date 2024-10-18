@@ -12,13 +12,13 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
       external: ['axios', 'lodash', 'vue'],
       plugins: [
         typescriptPaths({
-          preserveExtensions: true,
+          preserveExtensions: true
         }),
         typescript({
           sourceMap: false,
@@ -27,20 +27,20 @@ export default defineConfig({
           declarationDir: path.resolve(__dirname, 'dist/types'),
           outDir: path.resolve(__dirname, 'dist'),
           rootDir: path.resolve(__dirname, 'src'),
-          exclude: ['src/types'],
-        }),
-      ],
-    },
+          exclude: ['src/types']
+        })
+      ]
+    }
   },
 
   resolve: {
     alias: [
       {
         find: '@',
-        replacement: path.resolve(__dirname, './src'),
-      },
-    ],
+        replacement: path.resolve(__dirname, './src')
+      }
+    ]
   },
 
-  plugins: [],
+  plugins: []
 });
