@@ -73,7 +73,7 @@ const form = useForm<{
 }>({
   name: '',
   email: '',
-  message: '',
+  message: ''
 });
 
 const submitForm = async () => {
@@ -88,7 +88,7 @@ const submitForm = async () => {
 
     onError: () => {
       alert('Form submission failed');
-    },
+    }
   });
 };
 </script>
@@ -133,7 +133,7 @@ const uploadFile = async () => {
   await form.post('/upload', {
     onProgress: (progress) => {
       progressPercentage.value = progress.percentage;
-    },
+    }
   });
 };
 </script>

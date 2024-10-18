@@ -18,7 +18,7 @@ describe('hasFiles', () => {
     const fileList = {
       0: file,
       length: 1,
-      item: (index: number) => file,
+      item: (index: number) => file
     } as unknown as FileList;
     expect(hasFiles(fileList)).toBe(true);
   });
@@ -26,7 +26,7 @@ describe('hasFiles', () => {
   it('should return false for empty FileList instances', () => {
     const fileList = {
       length: 0,
-      item: (index: number) => null,
+      item: (index: number) => null
     } as unknown as FileList;
     expect(hasFiles(fileList)).toBe(false);
   });

@@ -5,15 +5,15 @@ module.exports = {
     sourceType: 'module',
     ecmaFeatures: {
       jsx: false,
-      experimentalObjectRestSpread: true,
-    },
+      experimentalObjectRestSpread: true
+    }
   },
   plugins: ['@typescript-eslint'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:mdx/recommended',
+    'plugin:mdx/recommended'
   ],
   ignorePatterns: ['temp.js', '**/vendor/*.js', '*.spec.ts', '*.test.ts'],
   rules: {
@@ -24,6 +24,6 @@ module.exports = {
     'comma-dangle': ['error', 'never'],
     'no-unused-vars': 0,
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    'no-console': 'error',
-  },
+    'no-console': 'error'
+  }
 };

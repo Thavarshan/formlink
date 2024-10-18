@@ -37,5 +37,5 @@ export enum ReservedFieldNames {
   PATCH_FORM = 'patchForm',
   DELETE_FORM = 'deleteForm',
   OPTIONS_FORM = 'optionsForm',
-  MARK_RECENTLY_SUCCESSFUL = 'markRecentlySuccessful',
+  MARK_RECENTLY_SUCCESSFUL = 'markRecentlySuccessful'
 }

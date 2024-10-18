@@ -17,7 +17,7 @@ export const isFormData = (value: unknown): value is FormData => value instanceo
 export function objectToFormData(
   source: Record<string, FormDataConvertible> = {},
   form: FormData = new FormData(),
-  parentKey: string | null = null,
+  parentKey: string | null = null
 ): FormData {
   for (const [key, value] of Object.entries(source)) {
     append(form, composeKey(parentKey, key), value);

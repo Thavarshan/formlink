@@ -101,8 +101,8 @@ describe('Form', () => {
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
-      }),
+        data: response
+      })
     );
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();
@@ -132,7 +132,7 @@ describe('Form', () => {
       () =>
         new Promise((resolve, reject) => {
           setTimeout(() => reject({ message: 'Form submission canceled', __CANCEL__: true }), 100);
-        }),
+        })
     );
 
     const onBefore = vi.fn();
@@ -167,8 +167,8 @@ describe('Form', () => {
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
-      }),
+        data: response
+      })
     );
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();
@@ -189,8 +189,8 @@ describe('Form', () => {
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
-      }),
+        data: response
+      })
     );
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();
@@ -211,8 +211,8 @@ describe('Form', () => {
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
-      }),
+        data: response
+      })
     );
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();
@@ -233,8 +233,8 @@ describe('Form', () => {
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
-      }),
+        data: response
+      })
     );
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();
@@ -255,8 +255,8 @@ describe('Form', () => {
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
-      }),
+        data: response
+      })
     );
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();
@@ -277,8 +277,8 @@ describe('Form', () => {
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: response,
-      }),
+        data: response
+      })
     );
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();

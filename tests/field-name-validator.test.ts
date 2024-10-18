@@ -5,7 +5,7 @@ describe('guardAgainstReservedFieldName', () => {
   it('should throw an error for reserved field names', () => {
     reservedFieldNames.forEach((fieldName) => {
       expect(() => guardAgainstReservedFieldName(fieldName)).toThrow(
-        `The field name "${fieldName}" is reserved and cannot be used in a Form or Errors instance.`,
+        `The field name "${fieldName}" is reserved and cannot be used in a Form or Errors instance.`
       );
     });
   });

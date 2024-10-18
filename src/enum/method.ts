@@ -5,5 +5,5 @@ export enum Methods {
   PATCH = 'patch',
   DELETE = 'delete',
   HEAD = 'head',
-  OPTIONS = 'options',
+  OPTIONS = 'options'
 }
