@@ -318,4 +318,4 @@ Formlink is open-sourced software licensed under the [MIT license](LICENSE.md).
 
 ## Acknowledgments
 
-- Special thanks to **Jonathan Reinink** for his work on **InertiaJS**, which inspired this project.
+- Special thanks to [**Jonathan Reinink**](https://github.com/reinink) for his work on [**InertiaJS**](https://inertiajs.com/), which inspired this project.
