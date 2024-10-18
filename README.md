@@ -13,14 +13,14 @@ A type-safe form handling library for Laravel + Vue.js applications, inspired by
 
 ## Features
 
-✨ **Type Safety** - Full TypeScript support with type inference
-🚀 **Zero Configuration** - Works out of the box with Laravel
-📦 **Built-in CSRF Protection** - Automatic CSRF token handling
-🔄 **Progress Tracking** - Real-time file upload progress
-🎯 **Smart Error Handling** - Automatic Laravel validation error handling
-🔌 **Event Hooks** - Rich lifecycle hooks for form events
-⚡ **Reactive Forms** - Vue 3 composition API support
-📱 **Framework Agnostic** - Can be used with any backend
+- ✨ **Type Safety** - Full TypeScript support with type inference
+- 🚀 **Zero Configuration** - Works out of the box with Laravel
+- 📦 **Built-in CSRF Protection** - Automatic CSRF token handling
+- 🔄 **Progress Tracking** - Real-time file upload progress
+- 🎯 **Smart Error Handling** - Automatic Laravel validation error handling
+- 🔌 **Event Hooks** - Rich lifecycle hooks for form events
+- ⚡ **Reactive Forms** - Vue 3 composition API support
+- 📱 **Framework Agnostic** - Can be used with any backend
 
 ## Quick Start
 
