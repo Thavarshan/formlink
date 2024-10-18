@@ -1,5 +1,6 @@
 export enum ReservedFieldNames {
   OPTIONS = '__options',
+  RULES = 'rules',
   PAGE = '__page',
   VALIDATE_REQUEST_TYPE = '__validateRequestType',
   DATA = 'data',

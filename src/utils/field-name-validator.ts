@@ -6,6 +6,7 @@ import { ReservedFieldNames } from '../enum/reserved-field-names';
  */
 export const reservedFieldNames: ReservedFieldNames[] = [
   ReservedFieldNames.OPTIONS,
+  ReservedFieldNames.RULES,
   ReservedFieldNames.PAGE,
   ReservedFieldNames.VALIDATE_REQUEST_TYPE,
   ReservedFieldNames.DATA,

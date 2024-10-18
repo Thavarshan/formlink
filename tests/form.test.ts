@@ -147,7 +147,7 @@ describe('Form', () => {
 
     expect(onBefore).toHaveBeenCalled();
     expect(onSuccess).not.toHaveBeenCalled();
-    expect(onError).not.toHaveBeenCalled();
+    expect(onError).not.toHaveBeenCalled(); // Updated to check if onError is not called
     expect(onFinish).toHaveBeenCalled();
     expect(form.processing).toBe(false);
     expect(form.progress).toBeNull();
@@ -283,5 +283,22 @@ describe('Form', () => {
     expect(onError).not.toHaveBeenCalled();
     expect(onFinish).toHaveBeenCalled();
     expect(form.recentlySuccessful).toBe(true);
+  });
+
+  describe('Form Validation', () => {
+    it('should validate form data before submission', async () => {
+      form.rules = {
+        email: [{
+          validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+          message: 'Invalid email format'
+        }]
+      };
+
+      form.email = 'invalid-email';
+      const isValid = await form.validate();
+
+      expect(isValid).toBe(false);
+      expect(form.errors.email).toBe('Invalid email format');
+    });
   });
 });
