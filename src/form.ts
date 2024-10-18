@@ -11,7 +11,6 @@ import { hasFiles } from './utils/file';
 import { reservedFieldNames, guardAgainstReservedFieldName } from './utils/field-name-validator';
 import { ValidationRules } from './types/validation';
 import { ApiValidationError } from './types/error';
-import { prototype } from 'events';
 
 /**
  * The Form class provides a simple way to manage form state and submission.
@@ -39,7 +38,7 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    * @param {TForm} initialData - The initial form data.
    * @param {AxiosInstance} [axiosInstance=axios] - The Axios instance to use for requests.
    */
-  constructor (initialData: TForm, axiosInstance: AxiosInstance = axios) {
+  constructor(initialData: TForm, axiosInstance: AxiosInstance = axios) {
     this.data = initialData;
     this.defaults = { ...initialData };
     this.axiosInstance = axiosInstance;

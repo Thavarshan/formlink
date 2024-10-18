@@ -288,10 +288,12 @@ describe('Form', () => {
   describe('Form Validation', () => {
     it('should validate form data before submission', async () => {
       form.rules = {
-        email: [{
-          validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-          message: 'Invalid email format'
-        }]
+        email: [
+          {
+            validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            message: 'Invalid email format'
+          }
+        ]
       };
 
       form.email = 'invalid-email';

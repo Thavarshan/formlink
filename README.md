@@ -64,11 +64,7 @@ await form.post('/api/contact');
   <form @submit.prevent="submit">
     <!-- Name field -->
     <div>
-      <input
-        v-model="form.name"
-        type="text"
-        :class="{ 'error': form.errors.name }"
-      />
+      <input v-model="form.name" type="text" :class="{ error: form.errors.name }" />
       <span v-if="form.errors.name" class="error">
         {{ form.errors.name }}
       </span>
@@ -76,11 +72,7 @@ await form.post('/api/contact');
 
     <!-- Email field -->
     <div>
-      <input
-        v-model="form.email"
-        type="email"
-        :class="{ 'error': form.errors.email }"
-      />
+      <input v-model="form.email" type="email" :class="{ error: form.errors.email }" />
       <span v-if="form.errors.email" class="error">
         {{ form.errors.email }}
       </span>
@@ -88,20 +80,12 @@ await form.post('/api/contact');
 
     <!-- File upload with progress -->
     <div>
-      <input
-        type="file"
-        @change="handleFile"
-      />
-      <div v-if="form.progress" class="progress">
-        {{ form.progress.percentage }}% uploaded
-      </div>
+      <input type="file" @change="handleFile" />
+      <div v-if="form.progress" class="progress">{{ form.progress.percentage }}% uploaded</div>
     </div>
 
     <!-- Submit button -->
-    <button
-      type="submit"
-      :disabled="form.processing"
-    >
+    <button type="submit" :disabled="form.processing">
       {{ form.processing ? 'Sending...' : 'Send Message' }}
     </button>
   </form>
@@ -159,10 +143,10 @@ const submit = async () => {
 Monitor form state using reactive properties:
 
 ```typescript
-form.processing  // Is the form being submitted?
-form.progress    // Upload progress data
-form.errors      // Validation errors
-form.isDirty    // Has the form been modified?
+form.processing; // Is the form being submitted?
+form.progress; // Upload progress data
+form.errors; // Validation errors
+form.isDirty; // Has the form been modified?
 ```
 
 ### HTTP Methods
@@ -170,11 +154,11 @@ form.isDirty    // Has the form been modified?
 Support for all common HTTP methods:
 
 ```typescript
-form.get(url)     // GET request
-form.post(url)    // POST request
-form.put(url)     // PUT request
-form.patch(url)   // PATCH request
-form.delete(url)  // DELETE request
+form.get(url); // GET request
+form.post(url); // POST request
+form.put(url); // PUT request
+form.patch(url); // PATCH request
+form.delete(url); // DELETE request
 ```
 
 ### Form Transformation
@@ -227,18 +211,21 @@ const form = useForm(data, customAxios);
 ### Default Options
 
 ```typescript
-const form = useForm<FormData>({
-  // Initial data
-}, {
-  // Axios instance (optional)
-  axios: customAxios,
+const form = useForm<FormData>(
+  {
+    // Initial data
+  },
+  {
+    // Axios instance (optional)
+    axios: customAxios,
 
-  // Form options (optional)
-  options: {
-    resetOnSuccess: true,
-    preserveScroll: true
+    // Form options (optional)
+    options: {
+      resetOnSuccess: true,
+      preserveScroll: true
+    }
   }
-});
+);
 ```
 
 ## TypeScript Support
