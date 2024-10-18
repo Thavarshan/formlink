@@ -1,7 +1,7 @@
 {
   "name": "formlink",
-  "description": "Form helper library.",
-  "version": "0.0.14",
+  "description": "Laravel-Vue form helper library.",
+  "version": "1.0.0",
   "type": "module",
   "author": {
     "name": "Jerome Thayananthajothy",
