@@ -286,7 +286,15 @@ form.name = 'John Doe';
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](https://github.com/Thavarshan/formlink/blob/main/.github/CONTRIBUTING.md) for details.
+
+To start contributing:
+
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m 'Add feature'`).
+4. Push to your branch (`git push origin feature/your-feature`).
+5. Open a pull request.
 
 ### Development Setup
 
@@ -304,16 +312,10 @@ npm test
 npm run build
 ```
 
-## Support
-
-- 📖 [Documentation](https://github.com/Thavarshan/formlink/wiki)
-- 🐛 [Issue Tracker](https://github.com/Thavarshan/formlink/issues)
-- 💬 [Discussions](https://github.com/Thavarshan/formlink/discussions)
-
 ## License
 
-[MIT](LICENSE.md) © Thavarshan
+Formlink is open-sourced software licensed under the [MIT license](LICENSE.md).
 
----
+## Acknowledgments
 
-Built with ❤️ by [Thavarshan](https://github.com/Thavarshan)
+- Special thanks to **Jonathan Reinink** for his work on **InertiaJS**, which inspired this project.
