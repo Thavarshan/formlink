@@ -2,7 +2,7 @@
 
 # About Formlink
 
-[![Latest Version on npm](https://img.shields.io/npm/v/jerome-formlink.svg)](https://www.npmjs.com/package/jerome-formlink)
+[![Latest Version on npm](https://img.shields.io/npm/v/formlink.svg)](https://www.npmjs.com/package/formlink)
 [![Test](https://github.com/Thavarshan/formlink/actions/workflows/test.yml/badge.svg)](https://github.com/Thavarshan/formlink/actions/workflows/test.yml)
 [![Lint](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml/badge.svg)](https://github.com/Thavarshan/formlink/actions/workflows/lint.yml)
 [![Total Downloads](https://img.shields.io/npm/dt/formlink.svg)](https://www.npmjs.com/package/formlink)
