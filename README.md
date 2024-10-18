@@ -193,10 +193,9 @@ Cancel an ongoing form submission.
 
 ## Roadmap
 
-- [x] Add GET, POST, PUT, DELETE methods.
+- [x] Add GET, POST, PUT, PATCH, DELETE methods.
 - [ ] Add advanced file upload handling.
 - [ ] Improve validation handling.
-- [ ] Support additional form submission events (e.g., `onAbort`).
 
 See the [open issues](https://github.com/Thavarshan/formlink/issues) for a list of proposed features (and known issues).
 
