@@ -9,18 +9,18 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A type-safe form handling library for Laravel + Vue.js applications, inspired by Inertia.js. Formlink provides a seamless bridge between your Laravel backend and Vue.js frontend, handling everything from form submissions to file uploads with minimal boilerplate.
+Formlink is a type-safe form-handling library for Laravel + Vue.js applications. It abstracts away form submissions, file uploads, and validation error handling, offering seamless integration with Laravel and Vue.js applications, inspired by Inertia.js's simplicity.
 
 ## Features
 
-- ✨ **Type Safety** - Full TypeScript support with type inference
-- 🚀 **Zero Configuration** - Works out of the box with Laravel
-- 📦 **Built-in CSRF Protection** - Automatic CSRF token handling
-- 🔄 **Progress Tracking** - Real-time file upload progress
-- 🎯 **Smart Error Handling** - Automatic Laravel validation error handling
-- 🔌 **Event Hooks** - Rich lifecycle hooks for form events
-- ⚡ **Reactive Forms** - Vue 3 composition API support
-- 📱 **Framework Agnostic** - Can be used with any backend
+- ✨ **Type Safety**: Full TypeScript support with type inference
+- 🚀 **Zero Configuration**: Works out of the box with Laravel
+- 🔐 **Built-in CSRF Protection**: Automatic CSRF token handling
+- 🔄 **Progress Tracking**: Real-time file upload progress
+- 🎯 **Smart Error Handling**: Automatic Laravel validation error management
+- ⚡ **Event Hooks**: Rich lifecycle hooks for form submission events
+- 📱 **Vue 3 Ready**: Reactive forms with Vue 3 composition API
+- 🛠️ **Framework Agnostic**: Can be used with any backend, not limited to Laravel
 
 ## Quick Start
 
@@ -39,21 +39,18 @@ pnpm add formlink
 ```typescript
 import { useForm } from 'formlink';
 
-// Define your form type
 interface ContactForm {
   name: string;
   email: string;
   message: string;
 }
 
-// Create a type-safe form instance
 const form = useForm<ContactForm>({
   name: '',
   email: '',
   message: ''
 });
 
-// Submit the form
 await form.post('/api/contact');
 ```
 
@@ -65,23 +62,19 @@ await form.post('/api/contact');
     <!-- Name field -->
     <div>
       <input v-model="form.name" type="text" :class="{ error: form.errors.name }" />
-      <span v-if="form.errors.name" class="error">
-        {{ form.errors.name }}
-      </span>
+      <span v-if="form.errors.name">{{ form.errors.name }}</span>
     </div>
 
     <!-- Email field -->
     <div>
       <input v-model="form.email" type="email" :class="{ error: form.errors.email }" />
-      <span v-if="form.errors.email" class="error">
-        {{ form.errors.email }}
-      </span>
+      <span v-if="form.errors.email">{{ form.errors.email }}</span>
     </div>
 
     <!-- File upload with progress -->
     <div>
       <input type="file" @change="handleFile" />
-      <div v-if="form.progress" class="progress">{{ form.progress.percentage }}% uploaded</div>
+      <div v-if="form.progress">{{ form.progress.percentage }}% uploaded</div>
     </div>
 
     <!-- Submit button -->
@@ -116,54 +109,80 @@ const handleFile = (e: Event) => {
 const submit = async () => {
   await form.post('/api/contact', {
     onBefore: () => {
-      // Called before the request
+      console.log('Request starting');
     },
     onProgress: (progress) => {
-      // Track upload progress
       console.log(`${progress.percentage}% uploaded`);
     },
     onSuccess: (response) => {
-      // Handle successful submission
+      console.log('Submission successful', response.data);
     },
     onError: (errors) => {
-      // Handle validation errors
+      console.log('Validation errors', errors);
     },
     onFinish: () => {
-      // Called after the request (success or error)
+      console.log('Request finished');
     }
   });
 };
 </script>
 ```
 
+## Available `FormOptions`
+
+The `FormOptions` object allows you to configure hooks and behaviors for form submissions. Here are the available options:
+
+| Option         | Type                                         | Description                                                                 |
+|----------------|----------------------------------------------|-----------------------------------------------------------------------------|
+| `resetOnSuccess` | `boolean`                                   | Whether to reset the form to its initial state after a successful submission. |
+| `onBefore`      | `() => void`                                 | Hook that is called before the form submission begins.                      |
+| `onSuccess`     | `(response: AxiosResponse) => void`          | Hook that is called when the form submission is successful.                 |
+| `onCanceled`    | `() => void`                                 | Hook that is called when the form submission is canceled.                   |
+| `onError`       | `(errors: Partial<Record<keyof TForm, string>>)` | Hook that is called when validation errors occur (e.g., from a Laravel backend). |
+| `onFinish`      | `() => void`                                 | Hook that is called when the form submission finishes, whether successful or not. |
+| `onProgress`    | `(progress: Progress) => void`               | Hook that tracks file upload progress or long-running requests.             |
+
+### Example of Form Options
+
+```typescript
+await form.post('/api/contact', {
+  resetOnSuccess: true,
+  onBefore: () => console.log('Submitting...'),
+  onSuccess: (response) => console.log('Submitted', response.data),
+  onError: (errors) => console.error('Validation errors:', errors),
+  onFinish: () => console.log('Request finished'),
+  onProgress: (progress) => console.log(`Upload ${progress.percentage}% complete`),
+});
+```
+
 ## Advanced Features
 
 ### Form States
 
-Monitor form state using reactive properties:
+Formlink provides various reactive states:
 
 ```typescript
 form.processing; // Is the form being submitted?
-form.progress; // Upload progress data
-form.errors; // Validation errors
-form.isDirty; // Has the form been modified?
+form.progress;   // Upload progress data
+form.errors;     // Validation errors
+form.isDirty;    // Has the form been modified?
 ```
 
 ### HTTP Methods
 
-Support for all common HTTP methods:
+Formlink supports multiple HTTP methods:
 
 ```typescript
-form.get(url); // GET request
-form.post(url); // POST request
-form.put(url); // PUT request
-form.patch(url); // PATCH request
+form.get(url);    // GET request
+form.post(url);   // POST request
+form.put(url);    // PUT request
+form.patch(url);  // PATCH request
 form.delete(url); // DELETE request
 ```
 
-### Form Transformation
+### Data Transformation
 
-Transform data before submission:
+You can transform form data before it is submitted:
 
 ```typescript
 form.transform((data) => ({
@@ -174,7 +193,7 @@ form.transform((data) => ({
 
 ### Error Handling
 
-Set and clear errors manually:
+Set or clear errors manually:
 
 ```typescript
 form.setError('email', 'Invalid email format');
@@ -183,7 +202,7 @@ form.clearErrors();
 
 ### Reset Functionality
 
-Reset form data:
+Reset the form data to its initial state:
 
 ```typescript
 // Reset all fields
@@ -193,9 +212,9 @@ form.reset();
 form.reset('email', 'name');
 ```
 
-## Configuration
-
 ### Custom Axios Instance
+
+You can use a custom Axios instance for your form requests:
 
 ```typescript
 import axios from 'axios';
@@ -208,74 +227,11 @@ const customAxios = axios.create({
 const form = useForm(data, customAxios);
 ```
 
-### Default Options
-
-```typescript
-const form = useForm<FormData>(
-  {
-    // Initial data
-  },
-  {
-    // Axios instance (optional)
-    axios: customAxios,
-
-    // Form options (optional)
-    options: {
-      resetOnSuccess: true,
-      preserveScroll: true
-    }
-  }
-);
-```
-
-## TypeScript Support
-
-Formlink is written in TypeScript and provides full type safety:
-
-```typescript
-interface UserForm {
-  name: string;
-  email: string;
-  age: number;
-  preferences?: {
-    newsletter: boolean;
-    theme: 'light' | 'dark';
-  };
-}
-
-const form = useForm<UserForm>({
-  name: '',
-  email: '',
-  age: 0,
-  preferences: {
-    newsletter: false,
-    theme: 'light'
-  }
-});
-
-// Type error ❌
-form.invalid_field = 'value';
-
-// Type error ❌
-form.age = 'twenty';
-
-// Valid ✅
-form.name = 'John Doe';
-```
-
-## Best Practices
-
-1. **Type Definition**: Always define types for your form data
-2. **Error Handling**: Use the provided hooks for error handling
-3. **Progress Tracking**: Implement progress tracking for file uploads
-4. **Form Reset**: Reset forms after successful submission
-5. **Validation**: Handle backend validation errors appropriately
-
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](https://github.com/Thavarshan/formlink/blob/main/.github/CONTRIBUTING.md) for details.
+Contributions are welcome! See our [Contributing Guide](https://github.com/Thavarshan/formlink/blob/main/.github/CONTRIBUTING.md) for details.
 
-To start contributing:
+To get started:
 
 1. Fork the repository.
 2. Create your feature branch (`git checkout -b feature/your-feature`).
@@ -305,4 +261,4 @@ Formlink is open-sourced software licensed under the [MIT license](LICENSE.md).
 
 ## Acknowledgments
 
-- Special thanks to [**Jonathan Reinink**](https://github.com/reinink) for his work on [**InertiaJS**](https://inertiajs.com/), which inspired this project.
+Special thanks to [**Jonathan Reinink**](https://github.com/reinink) for his work on [**InertiaJS**](https://inertiajs.com/), which inspired this project.
