@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Thavarshan/formlink/compare/v1.0.11...HEAD)
+## [Unreleased](https://github.com/Thavarshan/formlink/compare/v1.2.0...HEAD)
+
+## [v1.2.0](https://github.com/Thavarshan/formlink/compare/v1.0.11...v1.2.0) - 2024-10-19
+
+### Added
+
+- **Form Validation**: Introduced a new form validation feature that validates form data based on provided rules before submission, ensuring correct data is sent.- **File Upload Progress Tracking**: Added support for tracking the progress of file uploads during form submission.
+- **Debounced Form Submission**: Added support for debounced form submissions, reducing redundant network requests by delaying execution for a specified time.
+
+### Changed
+
+- **Improved Error Handling**: The error handling mechanism has been improved to integrate more effectively with Laravel's backend for validation errors.
+- **Dependency Updates**: Project dependencies have been updated to ensure compatibility and performance improvements.
+
+### Fixed
+
+- **Form Error Handling**: Fixed issues where form errors were not being correctly cleared or reset upon new submissions.
 
 ## [v1.0.11](https://github.com/Thavarshan/formlink/compare/v0.0.11...v1.0.11) - 2024-10-18
 
