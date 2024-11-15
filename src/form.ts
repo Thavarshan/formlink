@@ -268,7 +268,7 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
       this.errors = Object.entries(validationError.errors).reduce(
         (acc, [key, messages]) => ({
           ...acc,
-          [key]: messages
+          [key]: Array.isArray(messages) ? messages[0] : messages // Use the first error message if it's an array
         }),
         {}
       );
