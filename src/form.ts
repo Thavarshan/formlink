@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosProgressEvent, AxiosResponse, CancelTokenSource } from 'axios';
-import { cloneDeep, debounce, has, includes, set } from 'lodash';
 import { Form as IForm } from './types/form';
 import { NestedFormData } from './types/form-data';
 import { FormDataConvertible } from './types/form-data-convertible';
@@ -11,6 +10,7 @@ import { hasFiles } from './utils/file';
 import { reservedFieldNames, guardAgainstReservedFieldName } from './utils/field-name-validator';
 import { ValidationRules } from './types/validation';
 import { ApiValidationError } from './types/error';
+import { ReservedFieldNames } from './enum/reserved-field-names';
 
 /**
  * The Form class provides a simple way to manage form state and submission.
@@ -32,13 +32,14 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
   protected cancelTokenSource: CancelTokenSource | null = null;
   protected axiosInstance: AxiosInstance;
   protected timeouts: number[] = [];
+  private debounceTimeout: number | null = null;
 
   /**
    * Create a new form instance.
    * @param {TForm} initialData - The initial form data.
    * @param {AxiosInstance} [axiosInstance=axios] - The Axios instance to use for requests.
    */
-  constructor(initialData: TForm, axiosInstance: AxiosInstance = axios) {
+  constructor (initialData: TForm, axiosInstance: AxiosInstance = axios) {
     this.data = initialData;
     this.defaults = { ...initialData };
     this.axiosInstance = axiosInstance;
@@ -55,8 +56,8 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
     return new Proxy(instance, {
       get(target, key: string) {
         // Check if the key exists in the form data first (most common case)
-        if (has(target.data, key)) {
-          return target.data[key];
+        if (Object.prototype.hasOwnProperty.call(target.data, key) || key in target.data) {
+          return target.data[key as keyof TForm];
         }
 
         // Check if the property is a method in the class prototype
@@ -67,7 +68,7 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
         }
 
         // Check if the key exists on the instance itself
-        if (has(target, key)) {
+        if (Object.prototype.hasOwnProperty.call(target, key) || key in target) {
           return target[key];
         }
 
@@ -81,15 +82,19 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
 
         guardAgainstReservedFieldName(key as string);
 
-        if (has(target.data, key) && target.data[key] !== value && !includes(reservedFieldNames, key)) {
-          set(target.defaults, key, target.data[key]);
-          set(target.data, key, value);
+        if ((Object.prototype.hasOwnProperty.call(target.data, key) || key in target.data) &&
+          typeof key === 'string' &&
+          key in target.data &&
+          target.data[key as keyof TForm] !== value &&
+          !reservedFieldNames.includes(key as ReservedFieldNames)) {
+          target.defaults[key as keyof TForm] = target.data[key as keyof TForm];
+          target.data[key as keyof TForm] = value;
           target.isDirty = true;
           return true;
         }
 
         // Default action if it's a form-level field
-        if (has(target, key)) {
+        if (Object.prototype.hasOwnProperty.call(target, key) || key in target) {
           target[key as string] = value;
           return true;
         }
@@ -127,16 +132,36 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
   }
 
   /**
+   * Deep clone an object or value
+   * @param {T} obj - The object to clone
+   * @returns {T} - The cloned object
+   */
+  private deepClone<T>(obj: T): T {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.deepClone(item)) as unknown as T;
+    }
+
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+      acc[key as keyof T] = this.deepClone(value);
+      return acc;
+    }, {} as T);
+  }
+
+  /**
    * Reset form data to defaults. You can optionally reset specific fields.
    * @param {...(keyof TForm)[]} fields - The fields to reset.
    * @returns {void}
    */
   public reset(...fields: (keyof TForm)[]): void {
     if (fields.length === 0) {
-      Object.assign(this.data, cloneDeep(this.defaults));
+      Object.assign(this.data, this.deepClone(this.defaults));
     } else {
       fields.forEach((field) => {
-        this.data[field] = cloneDeep(this.defaults[field]);
+        this.data[field] = this.deepClone(this.defaults[field]);
       });
     }
     this.isDirty = false;
@@ -151,11 +176,11 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    */
   public setDefaults(fieldOrFields?: keyof TForm | Partial<TForm>, value?: FormDataConvertible): void {
     if (typeof fieldOrFields === 'undefined') {
-      this.defaults = cloneDeep(this.data);
+      this.defaults = this.deepClone(this.data);
     } else if (typeof fieldOrFields === 'string') {
-      this.defaults = { ...this.defaults, [fieldOrFields]: cloneDeep(value as TForm[keyof TForm]) };
+      this.defaults = { ...this.defaults, [fieldOrFields]: this.deepClone(value as TForm[keyof TForm]) };
     } else {
-      this.defaults = Object.assign(cloneDeep(this.defaults), fieldOrFields);
+      this.defaults = Object.assign(this.deepClone(this.defaults), fieldOrFields);
     }
   }
 
@@ -361,10 +386,16 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    * @param {Partial<FormOptions<TForm>>} [options] - The form options.
    * @returns {void}
    */
-  protected debouncedSubmit = debounce(
-    (method: Method, url: string, options?: Partial<FormOptions<TForm>>) => this.submit(method, url, options),
-    300
-  );
+  protected debouncedSubmit(method: Method, url: string, options?: Partial<FormOptions<TForm>>): void {
+    if (this.debounceTimeout !== null) {
+      window.clearTimeout(this.debounceTimeout);
+    }
+
+    this.debounceTimeout = window.setTimeout(() => {
+      this.submit(method, url, options);
+      this.debounceTimeout = null;
+    }, 300);
+  }
 
   /**
    * Validate the form data against the defined rules.
@@ -407,8 +438,13 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    * @returns {void}
    */
   protected clearTimeouts(): void {
-    this.timeouts.forEach(clearTimeout);
+    this.timeouts.forEach(window.clearTimeout);
     this.timeouts = [];
+
+    if (this.debounceTimeout !== null) {
+      window.clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = null;
+    }
   }
 
   /**
