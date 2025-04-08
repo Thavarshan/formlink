@@ -4,7 +4,42 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Thavarshan/formlink/compare/v1.2.5...HEAD)
+## [Unreleased](https://github.com/Thavarshan/formlink/compare/v1.2.6...HEAD)
+
+## [v1.2.6](https://github.com/Thavarshan/formlink/compare/v1.2.5...v1.2.6) - 2025-04-08
+
+### Added
+
+- **Utility Abstractions**: Introduced several utility functions to improve modularity and testability:
+  
+  - `createFormProxy` (moved proxy logic out of class)
+  - `deepClone` (replaces internal `deepClone` method)
+  - `prepareSubmissionData` (encapsulates data transformation and file handling logic)
+  - `getDefaultHeaders` (extracts CSRF token header logic)
+  - `createProgressObject` (standardizes upload progress structure)
+  - `formatGeneralError` and `formatValidationErrors` (modular error formatting)
+  - `createTimeout` (abstracts timeout creation)
+  
+- **Debounce Time Configuration**: Added optional `debounceTime` parameter to `submitDebounced` method for customizable delay duration.
+  
+
+### Changed
+
+- **Proxy Creation**: Replaced inline proxy logic within the constructor with `createFormProxy()` helper.
+- **Deep Cloning**: Refactored cloning logic to use the `deepClone()` utility instead of a private method.
+- **Data Preparation**: Moved data transformation and file handling into `prepareSubmissionData()`.
+- **Header Management**: Extracted CSRF token header logic into `getDefaultHeaders()`.
+- **Progress Tracking**: Refactored `updateProgress` to use `createProgressObject()` for standardized formatting.
+- **Error Handling**: Replaced inline error formatting with `formatValidationErrors()` and `formatGeneralError()` for better readability and separation of concerns.
+- **Timeout Management**: Switched from `window.setTimeout` to `createTimeout()` for better control and consistency.
+- **Cleaner Disposal**: Updated `dispose()` to use `Object.keys().forEach()` for better clarity and reliability when clearing object keys.
+
+### Fixed
+
+- **Potential Proxy Redundancy**: Improved property fallback logic by moving proxy logic out, reducing chances of conflicts or duplication.
+- **Error Object Casting**: Made error response casting and fallback more robust using type-safe utilities.
+- **Form Reset Edge Cases**: Fixed edge case where resetting with specific fields might not deep clone defaults properly.
+- **Timeout Cleanup**: Ensured all timeouts (including debounce) are properly cleared in all scenarios, improving memory safety.
 
 ## [v1.2.5](https://github.com/Thavarshan/formlink/compare/v1.2.4...v1.2.5) - 2025-04-05
 
