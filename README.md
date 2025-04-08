@@ -21,6 +21,9 @@ Formlink is a type-safe form-handling library for Laravel + Vue.js applications.
 - ⚡ **Event Hooks**: Rich lifecycle hooks for form submission events
 - 📱 **Vue 3 Ready**: Reactive forms with Vue 3 composition API
 - 🛠️ **Framework Agnostic**: Can be used with any backend, not limited to Laravel
+- 🔀 **HTTP Method Support**: Comprehensive support for all HTTP methods
+- 🧹 **Form Reset & State Management**: Easily reset form data to initial state
+- 🔄 **Debounced Submissions**: Support for debounced form submissions
 
 ## Quick Start
 
@@ -162,10 +165,12 @@ await form.post('/api/contact', {
 Formlink provides various reactive states:
 
 ```typescript
-form.processing; // Is the form being submitted?
-form.progress;   // Upload progress data
-form.errors;     // Validation errors
-form.isDirty;    // Has the form been modified?
+form.processing;         // Is the form being submitted?
+form.progress;           // Upload progress data
+form.errors;             // Validation errors
+form.isDirty;            // Has the form been modified?
+form.wasSuccessful;      // Was the form submission successful?
+form.recentlySuccessful; // Was the form submission successful recently?
 ```
 
 ### HTTP Methods
@@ -173,11 +178,12 @@ form.isDirty;    // Has the form been modified?
 Formlink supports multiple HTTP methods:
 
 ```typescript
-form.get(url);    // GET request
-form.post(url);   // POST request
-form.put(url);    // PUT request
-form.patch(url);  // PATCH request
-form.delete(url); // DELETE request
+form.get(url);     // GET request
+form.post(url);    // POST request
+form.put(url);     // PUT request
+form.patch(url);   // PATCH request
+form.delete(url);  // DELETE request
+form.options(url); // OPTIONS request
 ```
 
 ### Data Transformation
@@ -196,7 +202,17 @@ form.transform((data) => ({
 Set or clear errors manually:
 
 ```typescript
+// Set a single error
 form.setError('email', 'Invalid email format');
+
+// Set multiple errors at once
+form.setErrors({
+  email: 'Invalid email format',
+  name: 'Name is required',
+  formError: 'Please fix the errors before submitting'
+});
+
+// Clear all errors
 form.clearErrors();
 ```
 
@@ -212,6 +228,71 @@ form.reset();
 form.reset('email', 'name');
 ```
 
+### Default Values
+
+Set new default values for the form:
+
+```typescript
+// Set all current data as new defaults
+form.setDefaults();
+
+// Set a specific field's default value
+form.setDefaults('email', 'default@example.com');
+
+// Set multiple field defaults at once
+form.setDefaults({
+  name: 'John Doe',
+  email: 'john@example.com'
+});
+```
+
+### Validation
+
+Formlink provides a simple validation system:
+
+```typescript
+// Define validation rules
+form.rules = {
+  email: [
+    { validate: (value) => !!value, message: 'Email is required' },
+    { validate: (value) => /\S+@\S+\.\S+/.test(value as string), message: 'Invalid email format' }
+  ],
+  name: [
+    { validate: (value) => !!value, message: 'Name is required' }
+  ]
+};
+
+// Run validation
+const isValid = await form.validate();
+if (isValid) {
+  await form.post('/api/contact');
+}
+```
+
+### Debounced Submissions
+
+For search forms or auto-save functionality:
+
+```typescript
+// Debounce form submission (default 300ms)
+form.submitDebounced('get', '/api/search');
+
+// Custom debounce time (1000ms)
+form.submitDebounced('post', '/api/auto-save', {}, 1000);
+```
+
+### Cancellation
+
+Cancel an ongoing form submission:
+
+```typescript
+// Start submission
+const submissionPromise = form.post('/api/upload-large-file');
+
+// Cancel it if needed
+form.cancel();
+```
+
 ### Custom Axios Instance
 
 You can use a custom Axios instance for your form requests:
@@ -221,10 +302,24 @@ import axios from 'axios';
 
 const customAxios = axios.create({
   baseURL: 'https://api.example.com',
-  timeout: 5000
+  timeout: 5000,
+  headers: {
+    'X-Custom-Header': 'value'
+  }
 });
 
 const form = useForm(data, customAxios);
+```
+
+### Resource Cleanup
+
+For single-page applications, ensure proper cleanup:
+
+```typescript
+// In your component's onUnmounted lifecycle hook
+onUnmounted(() => {
+  form.dispose();
+});
 ```
 
 ## Contributing
