@@ -5,12 +5,14 @@ import { FormDataConvertible } from './types/form-data-convertible';
 import { FormOptions } from './types/form-options';
 import { Method } from './types/method';
 import { Progress } from './types/progress';
-import { objectToFormData } from './utils/form-data';
-import { hasFiles } from './utils/file';
-import { reservedFieldNames, guardAgainstReservedFieldName } from './utils/field-name-validator';
 import { ValidationRules } from './types/validation';
 import { ApiValidationError } from './types/error';
-import { ReservedFieldNames } from './enum/reserved-field-names';
+import { createFormProxy } from './utils/form-proxy';
+import { deepClone } from './utils/deep-clone';
+import { getDefaultHeaders, prepareSubmissionData } from './utils/http-helpers';
+import { createProgressObject } from './utils/progress-tracker';
+import { formatGeneralError, formatValidationErrors } from './utils/error-formatter';
+import { createTimeout } from './utils/timeout';
 
 /**
  * The Form class provides a simple way to manage form state and submission.
@@ -44,64 +46,7 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
     this.defaults = { ...initialData };
     this.axiosInstance = axiosInstance;
 
-    return this.createProxy(this);
-  }
-
-  /**
-   * Create a proxy for the form instance to allow for dynamic property access.
-   * @param {Form<TForm>} instance - The form instance.
-   * @returns {Form<TForm>} The proxied form instance.
-   */
-  protected createProxy(instance: Form<TForm>): Form<TForm> {
-    return new Proxy(instance, {
-      get(target, key: string) {
-        // Check if the key exists in the form data first (most common case)
-        if (Object.prototype.hasOwnProperty.call(target.data, key) || key in target.data) {
-          return target.data[key as keyof TForm];
-        }
-
-        // Check if the property is a method in the class prototype
-        const value = Reflect.get(target, key, target);
-
-        if (typeof value === 'function') {
-          return value.bind(target);
-        }
-
-        // Check if the key exists on the instance itself
-        if (Object.prototype.hasOwnProperty.call(target, key) || key in target) {
-          return target[key];
-        }
-
-        return undefined;
-      },
-      set(target, key, value) {
-        if (Object.prototype.hasOwnProperty.call(target, key)) {
-          target[key as string] = value;
-          return true;
-        }
-
-        guardAgainstReservedFieldName(key as string);
-
-        if ((Object.prototype.hasOwnProperty.call(target.data, key) || key in target.data) &&
-          typeof key === 'string' &&
-          key in target.data &&
-          target.data[key as keyof TForm] !== value &&
-          !reservedFieldNames.includes(key as ReservedFieldNames)) {
-          target.defaults[key as keyof TForm] = target.data[key as keyof TForm];
-          target.data[key as keyof TForm] = value;
-          target.isDirty = true;
-          return true;
-        }
-
-        // Default action if it's a form-level field
-        if (Object.prototype.hasOwnProperty.call(target, key) || key in target) {
-          target[key as string] = value;
-          return true;
-        }
-
-        return false;
-      }
-    });
+    return createFormProxy(this);
   }
 
   /**
@@ -132,36 +77,16 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
   }
 
   /**
-   * Deep clone an object or value
-   * @param {T} obj - The object to clone
-   * @returns {T} - The cloned object
-   */
-  private deepClone<T>(obj: T): T {
-    if (obj === null || typeof obj !== 'object') {
-      return obj;
-    }
-
-    if (Array.isArray(obj)) {
-      return obj.map(item => this.deepClone(item)) as unknown as T;
-    }
-
-    return Object.entries(obj).reduce((acc, [key, value]) => {
-      acc[key as keyof T] = this.deepClone(value);
-      return acc;
-    }, {} as T);
-  }
-
-  /**
    * Reset form data to defaults. You can optionally reset specific fields.
    * @param {...(keyof TForm)[]} fields - The fields to reset.
    * @returns {void}
    */
   public reset(...fields: (keyof TForm)[]): void {
     if (fields.length === 0) {
-      Object.assign(this.data, this.deepClone(this.defaults));
+      Object.assign(this.data, deepClone(this.defaults));
     } else {
       fields.forEach((field) => {
-        this.data[field] = this.deepClone(this.defaults[field]);
+        this.data[field] = deepClone(this.defaults[field]);
       });
     }
     this.isDirty = false;
@@ -176,11 +101,11 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    */
   public setDefaults(fieldOrFields?: keyof TForm | Partial<TForm>, value?: FormDataConvertible): void {
     if (typeof fieldOrFields === 'undefined') {
-      this.defaults = this.deepClone(this.data);
+      this.defaults = deepClone(this.data);
     } else if (typeof fieldOrFields === 'string') {
-      this.defaults = { ...this.defaults, [fieldOrFields]: this.deepClone(value as TForm[keyof TForm]) };
+      this.defaults = { ...this.defaults, [fieldOrFields]: deepClone(value as TForm[keyof TForm]) };
     } else {
-      this.defaults = Object.assign(this.deepClone(this.defaults), fieldOrFields);
+      this.defaults = Object.assign(deepClone(this.defaults), fieldOrFields);
     }
   }
 
@@ -204,25 +129,20 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
   public async submit(method: Method, url: string, options?: Partial<FormOptions<TForm>>): Promise<void> {
     this.processing = true;
     this.clearErrors();
-    const submitData = this.transformCallback ? this.transformCallback(this.data) : this.data;
 
     this.cancelTokenSource = axios.CancelToken.source();
 
     try {
       if (options?.onBefore) options.onBefore();
 
-      const dataToSubmit = hasFiles(this.data)
-        ? objectToFormData(this.data as Record<string, FormDataConvertible>)
-        : submitData;
+      const dataToSubmit = prepareSubmissionData(this.data, this.transformCallback);
 
       const response: AxiosResponse = await this.axiosInstance({
         method,
         url,
         data: dataToSubmit,
         cancelToken: this.cancelTokenSource.token,
-        headers: {
-          'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''
-        },
+        headers: getDefaultHeaders(),
         onUploadProgress: (event) => {
           if (event.total) {
             this.updateProgress(event, options);
@@ -247,13 +167,8 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    */
   protected updateProgress(event: AxiosProgressEvent, options?: Partial<FormOptions<TForm>>): void {
     if (event.total) {
-      this.progress = {
-        total: event.total,
-        loaded: event.loaded,
-        percentage: Math.round((event.loaded / event.total) * 100),
-        bytes: event.loaded,
-        lengthComputable: event.lengthComputable
-      };
+      this.progress = createProgressObject(event);
+
       if (options?.onProgress && this.progress) {
         options.onProgress(this.progress);
       }
@@ -290,17 +205,9 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
 
     if (axios.isAxiosError(error) && error.response?.status === 422) {
       const validationError = error.response.data as ApiValidationError;
-      this.errors = Object.entries(validationError.errors).reduce(
-        (acc, [key, messages]) => ({
-          ...acc,
-          [key]: Array.isArray(messages) ? messages[0] : messages // Use the first error message if it's an array
-        }),
-        {}
-      );
+      this.errors = formatValidationErrors(validationError) as Partial<Record<keyof TForm | 'formError', string>>;
     } else {
-      this.errors = {
-        formError: error instanceof Error ? error.message : 'An unexpected error occurred'
-      } as Partial<Record<keyof TForm | 'formError', string>>;
+      this.errors = formatGeneralError(error) as Partial<Record<keyof TForm | 'formError', string>>;
     }
 
     if (options?.onError) {
@@ -308,6 +215,7 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
     }
   }
 
+  // HTTP method helpers
   /**
    * Submit the form with a GET request.
    * @param {string} url - The URL to submit to.
@@ -373,28 +281,23 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    * @param {Method} method - The HTTP method.
    * @param {string} url - The URL to submit to.
    * @param {Partial<FormOptions<TForm>>} [options] - The form options.
+   * @param {number} [debounceTime=300] - The debounce time in milliseconds.
    * @returns {void}
    */
-  public submitDebounced(method: Method, url: string, options?: Partial<FormOptions<TForm>>): void {
-    this.debouncedSubmit(method, url, options);
-  }
-
-  /**
-   * Submit the form with the specified method and URL using Axios, debounced.
-   * @param {Method} method - The HTTP method.
-   * @param {string} url - The URL to submit to.
-   * @param {Partial<FormOptions<TForm>>} [options] - The form options.
-   * @returns {void}
-   */
-  protected debouncedSubmit(method: Method, url: string, options?: Partial<FormOptions<TForm>>): void {
+  public submitDebounced(
+    method: Method,
+    url: string,
+    options?: Partial<FormOptions<TForm>>,
+    debounceTime: number = 300
+  ): void {
     if (this.debounceTimeout !== null) {
-      window.clearTimeout(this.debounceTimeout);
+      clearTimeout(this.debounceTimeout);
     }
 
-    this.debounceTimeout = window.setTimeout(() => {
+    this.debounceTimeout = createTimeout(() => {
       this.submit(method, url, options);
       this.debounceTimeout = null;
-    }, 300);
+    }, debounceTime);
   }
 
   /**
@@ -438,23 +341,23 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    * @returns {void}
    */
   protected clearTimeouts(): void {
-    this.timeouts.forEach(window.clearTimeout);
+    this.timeouts.forEach(clearTimeout);
     this.timeouts = [];
 
     if (this.debounceTimeout !== null) {
-      window.clearTimeout(this.debounceTimeout);
+      clearTimeout(this.debounceTimeout);
       this.debounceTimeout = null;
     }
   }
 
   /**
-   * Mark the form as recently successful for a short duration (e.g., 2 seconds).
+   * Mark the form as recently successful for a short duration.
    * @param {number} [timeout=2000] - The duration in milliseconds.
    * @returns {void}
    */
   protected markRecentlySuccessful(timeout: number = 2000): void {
     this.recentlySuccessful = true;
-    const timeoutId = window.setTimeout(() => {
+    const timeoutId = createTimeout(() => {
       this.recentlySuccessful = false;
     }, timeout);
     this.timeouts.push(timeoutId);
@@ -469,16 +372,17 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
     this.clearErrors();
     this.clearTimeouts();
 
-    for (const key in this.data) {
-      delete this.data[key];
-    }
+    // Clear all data
+    Object.keys(this.data).forEach(key => {
+      delete this.data[key as keyof TForm];
+    });
 
-    for (const key in this.defaults) {
-      delete this.defaults[key];
-    }
+    Object.keys(this.defaults).forEach(key => {
+      delete this.defaults[key as keyof TForm];
+    });
 
-    for (const key in this) {
+    Object.keys(this).forEach(key => {
       delete this[key];
-    }
+    });
   }
 }
