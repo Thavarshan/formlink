@@ -1,13 +1,153 @@
 # Release Notes
 
-## [Unreleased](https://github.com/Thavarshan/formlink/compare/v1.2.6...HEAD)
+## [Unreleased](https://github.com/Thavarshan/formlink/compare/v1.3.0...HEAD)
+
+## [v1.3.0](https://github.com/Thavarshan/formlink/compare/v1.2.6...v1.3.0) - 2025-05-23
+
+### Added
+
+- **Debug Mode**: Added development-friendly debug mode with automatic detection based on `NODE_ENV`
+  
+  - Safe environment checks for browser/Node.js compatibility
+  - Prefixed debug messages with `[Form Debug]` for easy identification
+  - Optional data parameter for detailed debugging output
+  
+- **Type Guards**: Implemented robust type safety improvements
+  
+  - `isFile()` type guard with environment safety checks
+  - `isBlob()` type guard for better file handling
+  - Enhanced cross-platform compatibility for browser and Node.js environments
+  
+- **Advanced State Management**: Comprehensive form state tracking and reporting
+  
+  - `getStateSummary()` method for complete form state overview
+  - `isState()` method for checking specific form states
+  - Enhanced dirty field tracking with granular control
+  - Form state enumeration (`FormState.IDLE`, `PROCESSING`, `SUCCESS`, `ERROR`, `CANCELLED`)
+  
+- **Enhanced Validation System**: Improved validation capabilities
+  
+  - `validateField()` for individual field validation
+  - `validateDirtyFields()` for validating only modified fields
+  - Async validation support with proper error handling
+  - Better validation error reporting and management
+  
+- **Input Validation**: Added constructor input validation for better error prevention
+  
+  - Validates `initialData` parameter to ensure it's a valid object
+  - Throws descriptive errors for invalid input
+  - Prevents runtime errors from malformed initialization
+  
+- **Cross-Platform Improvements**: Enhanced compatibility across different environments
+  
+  - Safe `process` existence checks for browser compatibility
+  - Graceful fallbacks for environment-specific APIs
+  - Better error handling for different runtime environments
+  
+
+### Changed
+
+- **Enhanced Data Cloning**: Improved cloning strategy with performance optimizations
+  
+  - Uses `structuredClone` when available for better performance
+  - Graceful fallback to utility `deepClone` function
+  - Separate methods for full data cloning vs. field-level cloning
+  - Better handling of complex nested objects and circular references
+  
+- **FormData Generation**: Enhanced file handling in `toFormData()` method
+  
+  - Uses new type guards for safer File/Blob detection
+  - Better handling of nested objects and arrays
+  - Improved FormData key generation for complex structures
+  - Enhanced null/undefined value handling
+  
+- **Form Reset Logic**: Improved reset functionality with better state management
+  
+  - Enhanced field-specific reset with proper dirty field cleanup
+  - Better default value handling and restoration
+  - Improved state cleanup after reset operations
+  - More reliable form state restoration
+  
+- **Error Handling**: Significantly improved error management
+  
+  - DRY error assignment with helper functions
+  - Better HTTP status code handling (401, 403, 404, 422, 5xx)
+  - Enhanced network error detection and reporting
+  - Improved validation error formatting and display
+  
+- **Resource Management**: Enhanced cleanup and disposal mechanisms
+  
+  - Better timeout management and cleanup
+  - Improved request cancellation handling
+  - More thorough resource disposal in `dispose()` method
+  - Enhanced memory management for long-running applications
+  
+
+### Fixed
+
+- **Constructor Safety**: Fixed potential runtime errors from invalid initialization data
+  
+  - Added comprehensive input validation
+  - Better error messages for debugging
+  - Prevents crashes from malformed initial data
+  
+- **Environment Compatibility**: Resolved cross-platform compatibility issues
+  
+  - Fixed `process` access in browser environments
+  - Better handling of Node.js vs. browser APIs
+  - Improved error handling for missing environment features
+  
+- **File Upload Reliability**: Enhanced file handling robustness
+  
+  - Better type checking for File and Blob objects
+  - Improved error handling for unsupported file types
+  - Enhanced FormData generation for complex file structures
+  
+- **State Consistency**: Fixed various state management edge cases
+  
+  - Better dirty field tracking consistency
+  - Improved form state transitions
+  - Enhanced error state management
+  - More reliable success/failure state handling
+  
+- **Memory Leaks**: Addressed potential memory leaks and resource cleanup
+  
+  - Better timeout cleanup in all scenarios
+  - Improved request cancellation handling
+  - Enhanced disposal of event listeners and callbacks
+  - More thorough cleanup of internal state
+  
+
+### Developer Experience
+
+- **Enhanced Documentation**: Comprehensive JSDoc improvements
+  
+  - Detailed parameter descriptions for all methods
+  - Better return type documentation
+  - Enhanced usage examples in comments
+  - Improved TypeScript intellisense support
+  
+- **Better Debugging**: Improved development experience
+  
+  - Debug mode for development environments
+  - Better error messages with context
+  - Enhanced logging for troubleshooting
+  - More descriptive validation error messages
+  
+- **Improved Tooling**: Enhanced development and build tooling
+  
+  - Better TypeScript integration
+  - Improved linting rules and fixes
+  - Enhanced testing capabilities
+  - Better IDE support and autocomplete
+  
 
 ## [v1.2.6](https://github.com/Thavarshan/formlink/compare/v1.2.5...v1.2.6) - 2025-04-08
 
 ### Added
 
 - **Utility Abstractions**: Introduced several utility functions to improve modularity and testability:
-
+  
   - `createFormProxy` (moved proxy logic out of class)
   - `deepClone` (replaces internal `deepClone` method)
   - `prepareSubmissionData` (encapsulates data transformation and file handling logic)
@@ -15,8 +155,9 @@
   - `createProgressObject` (standardizes upload progress structure)
   - `formatGeneralError` and `formatValidationErrors` (modular error formatting)
   - `createTimeout` (abstracts timeout creation)
-
+  
 - **Debounce Time Configuration**: Added optional `debounceTime` parameter to `submitDebounced` method for customizable delay duration.
+  
 
 ### Changed
 
