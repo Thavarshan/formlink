@@ -7,7 +7,6 @@ const install = (app: App) => {
   app.config.globalProperties.$useForm = useForm;
 };
 
-export default { install };
-
+export { install };
 export { Form } from './form';
 export { useForm } from './use-form';

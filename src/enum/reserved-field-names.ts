@@ -1,3 +1,6 @@
+/**
+ * Reserved field names for form handling.
+ */
 export enum ReservedFieldNames {
   OPTIONS = '__options',
   RULES = 'rules',

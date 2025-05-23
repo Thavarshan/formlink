@@ -35,5 +35,5 @@ export function prepareSubmissionData<TForm>(
 
   return hasFiles(data as FormDataConvertible | RequestPayload)
     ? objectToFormData(data as Record<string, FormDataConvertible>)
-    : preprocessedData as object | FormData;
+    : (preprocessedData as object | FormData);
 }

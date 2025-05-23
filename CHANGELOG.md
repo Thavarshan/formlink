@@ -1,8 +1,4 @@
-# Changelog 📝
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+# Release Notes
 
 ## [Unreleased](https://github.com/Thavarshan/formlink/compare/v1.2.6...HEAD)
 
@@ -11,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 - **Utility Abstractions**: Introduced several utility functions to improve modularity and testability:
-  
+
   - `createFormProxy` (moved proxy logic out of class)
   - `deepClone` (replaces internal `deepClone` method)
   - `prepareSubmissionData` (encapsulates data transformation and file handling logic)
@@ -19,9 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - `createProgressObject` (standardizes upload progress structure)
   - `formatGeneralError` and `formatValidationErrors` (modular error formatting)
   - `createTimeout` (abstracts timeout creation)
-  
+
 - **Debounce Time Configuration**: Added optional `debounceTime` parameter to `submitDebounced` method for customizable delay duration.
-  
 
 ### Changed
 
@@ -71,7 +66,7 @@ Bumping version to `2.0.0` to avoid version collisions when publishing to `npm` 
 
 ### Fixed
 
-* Lodash debounce method not found (#58)
+- Lodash debounce method not found (#58)
 
 ## [v1.2.0](https://github.com/Thavarshan/formlink/compare/v1.0.11...v1.2.0) - 2024-10-19
 

@@ -1,3 +1,6 @@
+/**
+ * Methods enum for HTTP request types.
+ */
 export enum Methods {
   GET = 'get',
   POST = 'post',

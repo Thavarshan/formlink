@@ -26,23 +26,25 @@ export function createFormProxy<TForm extends NestedFormData<TForm>>(instance: F
 
       // Check if the key exists on the instance itself
       if (keyExistsIn(target, key)) {
-        return target[key];
+        return (target as unknown as Record<string, unknown>)[key];
       }
 
       return undefined;
     },
     set(target, key, value) {
       if (hasOwnProperty(target, key)) {
-        target[key as string] = value;
+        (target as unknown as Record<string, unknown>)[key as string] = value;
         return true;
       }
 
       guardAgainstReservedFieldName(key as string);
 
-      if (keyExistsIn(target.data, key) &&
+      if (
+        keyExistsIn(target.data, key) &&
         typeof key === 'string' &&
         key in target.data &&
-        target.data[key as keyof TForm] !== value) {
+        target.data[key as keyof TForm] !== value
+      ) {
         target.setDefaults(key as keyof TForm, target.data[key as keyof TForm] as FormDataConvertible);
         target.data[key as keyof TForm] = value;
         target.isDirty = true;
@@ -51,7 +53,7 @@ export function createFormProxy<TForm extends NestedFormData<TForm>>(instance: F
 
       // Default action if it's a form-level field
       if (keyExistsIn(target, key)) {
-        target[key as string] = value;
+        (target as unknown as Record<string, unknown>)[key as string] = value;
         return true;
       }
 

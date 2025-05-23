@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e # this makes the script fail on first error
+
+# Run lint and tests before allowing commit
+npm run format
+npm run lint:fix
+npm run build
+npm test
