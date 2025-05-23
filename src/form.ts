@@ -104,7 +104,7 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
    * @param {AxiosInstance} [axiosInstance=axios] - The Axios instance to use for requests.
    * @returns {Form<TForm>} A proxied form instance for reactivity.
    */
-  constructor (initialData: TForm, axiosInstance: AxiosInstance = axios) {
+  constructor(initialData: TForm, axiosInstance: AxiosInstance = axios) {
     if (!initialData || typeof initialData !== 'object') {
       throw new Error('initialData must be a valid object');
     }
@@ -692,7 +692,7 @@ export class Form<TForm extends NestedFormData<TForm>> implements IForm<TForm> {
     processing: boolean;
     wasSuccessful: boolean;
     recentlySuccessful: boolean;
-  } {
+    } {
     return {
       state: this.state,
       hasErrors: this.hasErrors(),
